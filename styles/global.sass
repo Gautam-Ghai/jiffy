@@ -1,0 +1,63 @@
+@import './variables'
+
+body
+    background-color: $primary-bg-color
+
+.navbar
+    background-color: $card-color
+
+.input-color
+    background-color: $primary-bg-color
+
+.profile
+    background-color: $card-color
+
+.user-dp
+    background-color: $button-color-1
+    border: 4px solid #113964 !important
+
+.stats
+    background-color: $card-secondary-color
+
+.button
+    background: linear-gradient($button-color-1, $button-color-2)
+
+.card
+    max-width: 768px
+
+.card-body
+    background-color: $card-color
+    border-radius: 6px
+
+.card-footer
+    background-color: $card-secondary-color
+    border-bottom-right-radius: 6px
+    border-bottom-left-radius: 6px
+
+.video-wrapper
+  position: relative
+
+.video
+  width: 100%
+  display: block
+
+.controls
+  position: absolute
+  top: 0
+  bottom: 0
+  left: 0
+  right: 0
+  display: flex
+  justify-content: center
+  align-items: center
+  cursor: pointer
+
+.video-control
+  width: 100px
+  transition: opacity 200ms linear
+
+.control-shown
+    opacity: 1
+
+.control-hidden
+    opacity: 0
