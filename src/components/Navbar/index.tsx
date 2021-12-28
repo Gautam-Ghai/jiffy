@@ -1,14 +1,25 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
+import Button from "../Button"
 
-import { AiOutlineCompass, AiOutlineSearch, AiOutlineFolderOpen, AiOutlineSetting } from "react-icons/ai"
+import { AiOutlineCompass, AiOutlineSearch, AiOutlineFolderOpen } from "react-icons/ai"
 import { HiOutlineUserGroup } from "react-icons/hi"
 import { MdOutlineVideoLibrary } from "react-icons/md"
 import { IoGameControllerOutline, IoNotificationsOutline } from "react-icons/io5"
+import Modal from '../Modal'
+import { signIn, signOut } from 'next-auth/react'
 
-const Navbar = () => {
+interface Props {
+    session: any,
+    signIn: any,
+    signOut: any
+}
+
+const Navbar = (props: Props) => {
+    const [ isOpen, setIsOpen ] = useState(false)
+
     return (
-        <header className="navbar h-12 w-full">
+        <header className="bg-card h-12 w-full">
             <div className="flex flex-row justify-between pt-1.5 md:justify-evenly mx-4 md:mx-0">
                 <h1 className="text-white font-bold text-xl pt-1 cursor-pointer">JIFFY</h1>
                 <div className="hidden md:block">
@@ -41,14 +52,29 @@ const Navbar = () => {
                         <AiOutlineSearch className="absolute top-1.5 left-2 h-6 w-6 text-gray-600" />
                     </form>
                 </div>
-                <div className='flex flex-row mt-1 space-x-4'>
-                    <IoNotificationsOutline className="h-6 w-6 text-gray-600 hover:text-white cursor-pointer"/>
-                    <AiOutlineSetting className="h-6 w-6 text-gray-600 hover:text-white cursor-pointer"/>
-                    <div className="h-7 w-7 cursor-pointer">
-                        <Image src="/assets/avatar.png" alt="image" height="100" width="100" className="rounded-full" layout='responsive'/>
-                    </div>
-                </div>
+                    {props.session ? (
+                        <div className='flex flex-row mt-1 space-x-4'>
+                            <IoNotificationsOutline className="h-6 w-6 text-gray-600 hover:text-white cursor-pointer"/>
+                            <div className="h-7 w-7 cursor-pointer">
+                                <Image src="/assets/avatar.png" alt="image" height="100" width="100" className="rounded-full" layout='responsive'/>
+                            </div>
+                            <Button onClick={() => signOut()} variant={true}>
+                                SignOut
+                            </Button>
+                        </div>  
+                    ) : (
+                        <div className='flex flex-row mt-1 space-x-1 lg:space-x-4'>
+                            <Button onClick={() => setIsOpen(true)}>
+                                SignIn
+                            </Button>
+                        </div>
+                    )}
             </div>
+            <Modal isOpen={isOpen} setIsOpen={setIsOpen} title='SignIn'>
+                <Button onClick={() => signIn('discord')} className='w-72 h-10'>
+                    Discord
+                </Button>
+            </Modal>
         </header>
     )
 }

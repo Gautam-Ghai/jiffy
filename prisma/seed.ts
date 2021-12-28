@@ -1,17 +1,16 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient;
+import { prisma } from "../lib/prisma";
 
 export const main = async () => {
-    const newPost = await prisma.post.create({
+    const newPost = await prisma.user.create({
         data:{
-            username: "tenz",
-            game: "Valorant",
-            video: "/assets/video.mp4",
-            comments: 50,
-            views: 130,
-            likes: 97,
-            shares: 43
+          name: 'fishmanjr',
+          email: 'gautam.ghai@outlook.com',
+          website: 'http://abc.xyz',
+          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer commodo, metus ac porttitor convallis, magna urna molestie est, ut luctus justo arcu nec odio. Maecenas tempor iaculis condimentum. Etiam augue lacus, consequat ac eleifend cursus, aliquet in enim. Nulla est ante, dignissim tincidunt sollicitudin ac, auctor quis libero.',
+          postsCount: 34,
+          viewsCount: 1100,
+          followersCount: 2200,
+          followingCount: 78
         }
     })
 }

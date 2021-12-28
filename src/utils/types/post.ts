@@ -1,14 +1,14 @@
+import { User } from "./user";
 export interface Post {
-    
   id: String
   createdAt: Date
   updatedAt: Date
-  likes: Number
-  comments: Number
-  views: Number
-  shares: Number
+  likesCount: Number
+  commentsCount: Number
+  viewsCount: Number
+  sharesCount: Number
   video: String
-  username: String
+  author?: User
   game: Game
 }
 

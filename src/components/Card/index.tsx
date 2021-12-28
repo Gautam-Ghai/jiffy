@@ -24,7 +24,7 @@ const Card = (props: Props) => {
                     <Image src="/assets/game.png" height="40" width="40" className="rounded-full" alt="game" />
                 </div>
                 <div className='flex flex-col text-white ml-4'>
-                    <p className='text-sm cursor-pointer'>{props.post.username} <span className="text-gray-600 cursor-default">in</span> Valorant</p>
+                    <p className='text-sm cursor-pointer'>{props.post.author.name} <span className="text-gray-600 cursor-default">in</span> Valorant</p>
                     <p className="text-gray-600 text-xs">{dayjs().to(dayjs(props.post.createdAt))}</p>
                 </div>
                 <div className='absolute right-0 mr-2'>  
@@ -38,19 +38,19 @@ const Card = (props: Props) => {
                     <div className='flex flex-row justify-between text-sm py-2'>
                         <div className="flex flex-row space-x-2 text-white items-center">
                             <AiOutlineLike className="text-blue-500 h-4 w-4"/>
-                            <p>{props.post.likes}</p>
+                            <p>{props.post.likesCount}</p>
                         </div>
                         <div className="flex flex-row space-x-4 text-white items-center">
                             <div className="flex flex-row space-x-2 text-white items-center">
-                                <p>{props.post.views}</p>
+                                <p>{props.post.viewsCount}</p>
                                 <p>Views</p>
                             </div>
                             <div className="flex flex-row space-x-2 text-white items-center">
-                                <p>{props.post.comments}</p>
+                                <p>{props.post.commentsCount}</p>
                                 <p>Comments</p>
                             </div>
                             <div className="flex flex-row space-x-2 text-white items-center">
-                                <p>{props.post.shares}</p>
+                                <p>{props.post.sharesCount}</p>
                                 <p>Shares</p>
                             </div>
                         </div>
