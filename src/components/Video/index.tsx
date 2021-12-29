@@ -24,7 +24,7 @@ const Video = ({ src }) => {
         onPause={onPause}
         ref={videoRef}
         className="video rounded-md"
-        src={src}
+        src={`${process.env.AWS_URL}${src}`}
       />
       <div className="controls" onClick={playOrPause}>
         <Image
