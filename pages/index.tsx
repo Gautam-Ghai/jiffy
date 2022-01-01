@@ -1,22 +1,36 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/router';
 import { prisma } from "../lib/prisma";
 import Navbar from '../src/components/Navbar'
 import Profile from '../src/components/Profile'
 import Main from '../src/components/Main'
 import Footer from '../src/components/Footer'
 import { Post } from '../src/utils/types/post'
+import { Session } from "../src/utils/types/session";
 
-import { getSession } from "next-auth/react"
+import { getSession, signIn, signOut } from "next-auth/react"
 
-import { signIn, signOut } from "next-auth/react"
 import Sidebar from '../src/components/Sidebar';
 interface Props {
     posts: Post[],
     user: any,
-    session: any
-}
+    session: Session
+} 
 
 const Home = (props: Props) => {
+  const router = useRouter();
+
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [theData, setTheData] = useState(props.posts);
+
+  const refreshData = () => {
+    router.replace(router.asPath);
+    setIsRefreshing(true);
+  };
+
+  useEffect(() => {
+    setIsRefreshing(false);
+  }, [theData]);
 
   return (
     <div className='mb-6'>
@@ -29,7 +43,7 @@ const Home = (props: Props) => {
             <Sidebar />
           }
         </div>
-        <Main posts={props.posts} />
+        <Main posts={props.posts} loggedinUser={props.session?.user} refreshData={refreshData}/>
       </div>
       <div className='block sm:hidden'>
         <Footer />
@@ -51,6 +65,9 @@ export const getServerSideProps = async ({ req }) => {
             name: true
           }
         }
+      },
+      orderBy: {
+        createdAt: 'desc'
       }
     });
     

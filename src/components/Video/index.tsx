@@ -1,7 +1,12 @@
 import React, { useRef, useState, useCallback } from "react";
 import Image from "next/image";
 
-const Video = ({ src }) => {
+interface Props {
+  src: string
+  blob: boolean
+}
+
+const Video = (props: Props) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef(null);
 
@@ -24,7 +29,7 @@ const Video = ({ src }) => {
         onPause={onPause}
         ref={videoRef}
         className="video rounded-md"
-        src={`${process.env.AWS_URL}${src}`}
+        src={props.blob ? props.src : `${process.env.AWS_URL}${props.src}`}
       />
       <div className="controls" onClick={playOrPause}>
         <Image

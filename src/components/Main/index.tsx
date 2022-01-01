@@ -6,12 +6,18 @@ import Card from '../Card'
 import { Post } from '../../utils/types/post'
 
 interface Props {
-    posts: Post[]
+    posts: Post[],
+    loggedinUser?: {
+        name: string
+        email: string
+        image: string,
+    },
+    refreshData?: () => void
 }
 
 const Main = (props: Props) => {
     return (
-        <div>
+        <div className="flex-grow">
             <div className="bg-card-2 w-full h-12 rounded-lg">
                 <div className="flex flex-row space-x-6 md:space-x-3 lg:space-x-8 items-center px-2 pt-3 text-sm">
                     <div className="flex flex-row h-9 cursor-pointer border-transparent border-b-2 p-0  text-gray-600 hover:border-blue-600 hover:text-white">
@@ -55,7 +61,7 @@ const Main = (props: Props) => {
             <div className="flex flex-col justify-center items-center">
                 {props.posts.map((data, key) => {
                     return ( 
-                    <Card post={data} key={key} />
+                    <Card post={data} key={key} loggedinUser={props.loggedinUser} refreshData={props.refreshData} />
                     )
                 })}
             </div>

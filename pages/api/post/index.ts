@@ -2,10 +2,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import nc from 'next-connect';
 import { prisma } from "../../../lib/prisma";
 import multer from 'multer';
-import path from "path";
 import AWS from 'aws-sdk';
 import { v4 as uuid } from "uuid";
-import fs from 'fs';
 
 const fileName = uuid()
 
@@ -24,7 +22,7 @@ const videoUpload = multer({
     },
     fileFilter(req, file, cb) {
       // upload only mp4 and mkv format
-      if (!file.originalname.match(/\.(mp4|MPEG-4|mkv)$/)) { 
+      if (!file.originalname.match(/\.(mp4|MPEG-4|mkv|wmv|mov)$/)) { 
          return cb(new Error('Please upload a video'))
       }
       cb(null, true)
@@ -47,25 +45,22 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
 .use(videoUpload.single('video'))
 .post(async (req, res) => {
   console.log(req.body)
-  let id : number;
-  
-  if(typeof req.body.authorId === 'string'){
-    id = parseInt(req.body.authorId)
-  } else {
-    id = req.body.authorId
-  }
   
   const author = {
     connect: {
-      id: id
+      name: req.body.name
     }
   }
 
   const user = await prisma.user.findUnique({
     where:{
-      id: id
+      name: req.body.name
     }
   })
+
+  if(req.body.title.length === 0){
+    res.status(500).json({ error: `Title can't be empty` });
+  }
 
   if(user){
     if(req.file){
@@ -84,6 +79,7 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
       if(file){
         const result = await prisma.post.create({
           data: {
+            title: req.body.title,
             video: params.Key,
             game: 'Valorant',
             author: author
@@ -101,6 +97,9 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
   } else {
     res.status(401).json({ error: `You don't have the access to upload a post` });
   }
+})
+.delete(async (req, res) =>{
+
 })
 
 

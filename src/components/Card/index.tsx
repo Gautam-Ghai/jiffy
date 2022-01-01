@@ -5,15 +5,48 @@ import { AiOutlineMore, AiOutlineLike, AiOutlineMessage } from "react-icons/ai"
 import { IoPaperPlaneOutline, IoBookmarkOutline } from "react-icons/io5"
 import dayjs from 'dayjs'
 import { Post } from '../../utils/types/post'
+import DropdownMenu from '../DropdownMenu'
 
 var relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(relativeTime)
 
 interface Props {
-    post: Post
+    post: Post,
+    loggedinUser?: {
+        name: string
+        email: string
+        image: string
+    },
+    refreshData?: () => void
 }
 
 const Card = (props: Props) => {
+
+    const handleEdit = () => {
+
+    }
+
+    const handleDelete = async(id: number) => {
+
+        if(props.post.author?.name === props.loggedinUser?.name){ 
+            fetch(`/api/post/${id}`, {method: 'DELETE'})
+            .then(res =>{
+                props.refreshData && props.refreshData();
+            }
+            )
+        }
+    }
+
+    const postOptions =[
+        {
+            name: 'Edit',
+            function: handleEdit
+        },
+        {
+            name: 'Delete',
+            function: handleDelete
+        },
+    ]
     return (
         <div className="card py-4">
             <div className="flex flex-row my-2 items-center relative">
@@ -24,17 +57,19 @@ const Card = (props: Props) => {
                     <Image src="/assets/game.png" height="40" width="40" className="rounded-full" alt="game" />
                 </div>
                 <div className='flex flex-col text-white ml-4'>
-                    <p className='text-sm cursor-pointer'>{props.post.author.name} <span className="text-gray-600 cursor-default">in</span> Valorant</p>
+                    <p className='text-sm cursor-pointer'>{props.post.author?.name} <span className="text-gray-600 cursor-default">in</span> Valorant</p>
                     <p className="text-gray-600 text-xs">{dayjs().to(dayjs(props.post.createdAt))}</p>
                 </div>
-                <div className='absolute right-0 mr-2'>  
-                    <AiOutlineMore className="text-gray-600 cursor-pointer"/>
-                </div>
+                {props.post.author?.name === props.loggedinUser?.name && 
+                    <DropdownMenu className='absolute right-0 mr-2' options={postOptions} id={props.post.id}>
+                        <AiOutlineMore className="text-gray-600 cursor-pointer"/>
+                    </DropdownMenu>
+                }
             </div>
             <div className='card-body'>  
                 <Video src={props.post.video} />
                 <div className="my-2 mx-2 lg:mx-6">
-                    <h1 className='text-white font-semibold text-lg'>Wall Bang!</h1>
+                    <h1 className='text-white font-semibold text-lg'>{props.post.title}</h1>
                     <div className='flex flex-row justify-between text-sm py-2'>
                         <div className="flex flex-row space-x-2 text-white items-center">
                             <AiOutlineLike className="text-blue-500 h-4 w-4"/>
