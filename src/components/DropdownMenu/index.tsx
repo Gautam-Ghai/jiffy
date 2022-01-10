@@ -4,11 +4,11 @@ import { Fragment, useEffect, useRef, useState } from 'react'
 interface Props {
   children: any,
   className?: any,
-  option: {
+  options: {
     name: string,
-    function: () => void
+    function: (() => void) | ((id: string | undefined) => void)
   }[],
-  id: string
+  id?: string
 }
 
 export default function DropdownMenu(props: Props) {
@@ -39,7 +39,7 @@ export default function DropdownMenu(props: Props) {
                       className={`${
                         active ? 'bg-blue-600 text-white' : 'text-gray-500'
                       } text-center w-full px-2 py-2 text-sm rounded-md`}
-                      onClick={() => opt.function(props.id)}
+                      onClick={props.id ? () => opt.function(props.id) : () => opt.function}
                     >
                       {opt.name}
                     </button>

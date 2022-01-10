@@ -10,25 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Post {
-  id                Int @default(autoincrement()) @id
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  likesCount        Int @default(0)
-  commentsCount     Int @default(0)
-  viewsCount        Int @default(0)
-  sharesCount       Int @default(0)
-  title             String
-  description       String?
-  video             String
-  game              GameType @default(Valorant)
-  authorId          Int
-  author            User @relation("Author", fields: [authorId], references: [id])
-  likedBy           User[] @relation("UserLikedPost", references: [id])
-  savedBy           User[] @relation("UserSavedPost", references: [id])
-  comments          Comment[] @relation("PostHasComment")
-}
-
 model User {
   id                Int @default(autoincrement()) @id
   name              String @unique
@@ -37,18 +18,47 @@ model User {
   accounts          Account[]
   sessions          Session[]
   image             String?
+  userProfile       UserProfile? @relation(name: "User")
+  createdAt         DateTime @default(now())
+}
+
+model UserProfile {
+  id                Int @default(autoincrement()) @id
+  userId            Int
+  user              User @relation("User", fields: [userId], references: [id])
+  username          String? @unique
+  profileImage      String?
+  bannerImage       String?
   website           String?
   description       String?
-  createdAt         DateTime @default(now())
-  postsCount        Int @default(0)
-  viewsCount        Int @default(0)
-  followersCount    Int @default(0)
-  followingCount    Int @default(0)
   posts             Post[] @relation("Author")
   likedPosts        Post[] @relation("UserLikedPost")
   savedPosts        Post[] @relation("UserSavedPost")
   comments          Comment[] @relation("UserComment")
   likedComments     Comment[] @relation("UserLikesComment")
+}
+
+model Game {
+  id                Int @default(autoincrement()) @id
+  name              String @unique
+  image             String?
+  posts             Post[] @relation(name: "LinkedGame")
+}
+
+model Post {
+  id                Int @default(autoincrement()) @id
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  title             String
+  description       String?
+  video             String
+  gameId            Int
+  game              Game @relation("LinkedGame", fields: [gameId], references: [id])
+  authorId          Int
+  author            UserProfile @relation("Author", fields: [authorId], references: [id])
+  likedBy           UserProfile[] @relation("UserLikedPost", references: [id])
+  savedBy           UserProfile[] @relation("UserSavedPost", references: [id])
+  comments          Comment[] @relation("PostHasComment")
 }
 
 model Comment {
@@ -57,12 +67,13 @@ model Comment {
   createdAt         DateTime @default(now())
   post              Post @relation("PostHasComment", fields: [postId], references: [id])
   postId            Int
-  parentComment     Comment? @relation("CommentParentsComment", fields: [parentCommentId], references: [id])
-  parentCommentId   Int?
-  childComments     Comment[] @relation("CommentParentsComment")
-  author            User @relation("UserComment", fields: [authorId], references: [id])
+  author            UserProfile @relation("UserComment", fields: [authorId], references: [id])
   authorId          Int
-  likedBy           User[] @relation("UserLikesComment", references: [id])
+  likedBy           UserProfile[] @relation("UserLikesComment", references: [id])
+  
+  // parentComment     Comment? @relation("CommentParentsComment", fields: [parentCommentId], references: [id])
+  // parentCommentId   Int?
+  // childComments     Comment[] @relation("CommentParentsComment")
 }
 
 model Account {
@@ -100,10 +111,4 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
-}
-enum GameType {
-  Valorant
-  LeagueOfLegends
-  RocketLeague
-  ApexLegends
 }

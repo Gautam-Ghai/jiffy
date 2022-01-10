@@ -1,6 +1,8 @@
 import React, { useRef, useState, useCallback } from "react";
 import Image from "next/image";
 
+import { AWS_URL } from "../../utils/const";
+
 interface Props {
   src: string
   blob: boolean
@@ -29,7 +31,7 @@ const Video = (props: Props) => {
         onPause={onPause}
         ref={videoRef}
         className="video rounded-md"
-        src={props.blob ? props.src : `${process.env.AWS_URL}${props.src}`}
+        src={props.blob ? props.src : `${AWS_URL}${props.src}`}
       />
       <div className="controls" onClick={playOrPause}>
         <Image

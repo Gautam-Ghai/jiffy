@@ -1,24 +1,27 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Button from "../Button"
 import Link from 'next/link'
+
+import { useSession, signIn, signOut } from "next-auth/react"
 
 import { AiOutlineCompass, AiOutlineSearch, AiOutlineFolderOpen } from "react-icons/ai"
 import { HiOutlineUserGroup } from "react-icons/hi"
 import { MdOutlineVideoLibrary } from "react-icons/md"
 import { IoGameControllerOutline, IoNotificationsOutline } from "react-icons/io5"
 import Modal from '../Modal'
-import { signIn, signOut } from 'next-auth/react'
 import DropdownMenu from "../DropdownMenu"
 
 interface Props {
-    session: any,
-    signIn: any,
-    signOut: any
 }
 
 const Navbar = (props: Props) => {
+    const { data: session, status } = useSession()
     const [ isOpen, setIsOpen ] = useState(false)
+
+    useEffect(() => {
+        console.log(session)
+    })
 
     const handleEditProfile = () => {
 
@@ -55,7 +58,7 @@ const Navbar = (props: Props) => {
                             <HiOutlineUserGroup className="h-6 w-6" />
                             <p className='hidden lg:block'>Communities</p>
                         </div>
-                        {props.session && 
+                        {session && 
                             <Link href="/upload" passHref> 
                                 <div className="flex flex-row space-x-1 mt-1 h-10 cursor-pointer border-transparent border-b-4 p-0  text-gray-600 hover:border-blue-600 hover:text-white">
                                     <MdOutlineVideoLibrary className="h-6 w-6" />
@@ -75,7 +78,7 @@ const Navbar = (props: Props) => {
                         <AiOutlineSearch className="absolute top-1.5 left-2 h-6 w-6 text-gray-600" />
                     </form>
                 </div>
-                    {props.session ? (
+                    {session ? (
                         <div className='flex flex-row mt-1 space-x-4'>
                             <IoNotificationsOutline className="h-6 w-6 text-gray-600 hover:text-white cursor-pointer"/>
                             <DropdownMenu options={postOptions}>

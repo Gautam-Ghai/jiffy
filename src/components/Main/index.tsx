@@ -58,7 +58,7 @@ const Main = (props: Props) => {
                     </div>
                 </div>
             </div>
-            <div className="flex flex-col justify-center items-center">
+            <div className="flex flex-col justify-center xl:flex-row xl:space-x-6 xl:flex-wrap items-center">
                 {props.posts.map((data, key) => {
                     return ( 
                     <Card post={data} key={key} loggedinUser={props.loggedinUser} refreshData={props.refreshData} />

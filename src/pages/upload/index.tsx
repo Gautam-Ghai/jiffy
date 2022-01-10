@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react'
 
 import { getSession, signIn, signOut } from "next-auth/react"
-import { Session } from "../../src/utils/types/session";
+import { Session } from "@/utils/types/session";
 
-import Navbar from '../../src/components/Navbar';
+import Navbar from 'components/Navbar';
 import {useDropzone} from 'react-dropzone';
-import Video from "../../src/components/Video"
-import Button from '../../src/components/Button';
+import Video from "@/components/Video"
+import Button from '@/components/Button';
 import { useRouter } from 'next/router'
+import Layout from "@/components/Layout"
 
 
 interface Props {
@@ -73,8 +74,7 @@ const Upload = (props : Props) => {
     }
 
     return (
-        <>
-          <Navbar session={props.session} signIn={signIn} signOut={signOut} />
+        <Layout>
           <div className="flex flex-col justify-center items-center mt-8 mx-2">
             <input type='text' className="w-96 p-1.5 border-none rounded-lg caret-gray-600 text-gray-600 placeholder-gray-600" placeholder="Title" onChange={(e) => handleChange(e)} value={title}/>
             {files.length !=0 ? files.map((file, key) => (
@@ -105,7 +105,7 @@ const Upload = (props : Props) => {
               </Button>
             </div>
           </div>
-        </>
+        </Layout>
     )
 }
 

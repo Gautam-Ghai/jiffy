@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router';
-import { prisma } from "../lib/prisma";
-import Navbar from '../src/components/Navbar'
-import Profile from '../src/components/Profile'
-import Main from '../src/components/Main'
-import Footer from '../src/components/Footer'
-import { Post } from '../src/utils/types/post'
-import { Session } from "../src/utils/types/session";
+import { prisma } from "../../lib/prisma";
+import Navbar from '@/components/Navbar'
+import Profile from '@/components/Profile'
+import Main from '@/components/Main'
+import Footer from '@/components/Footer'
+import { Post } from '@/utils/types/post'
+import { Session } from "@/utils/types/session";
+import Layout from '@/components/Layout';
 
 import { getSession, signIn, signOut } from "next-auth/react"
 
-import Sidebar from '../src/components/Sidebar';
+import Sidebar from '@/components/Sidebar';
 interface Props {
     posts: Post[],
     user: any,
@@ -33,22 +34,20 @@ const Home = (props: Props) => {
   }, [theData]);
 
   return (
-    <div className='mb-6'>
-      <Navbar session={props.session} signIn={signIn} signOut={signOut} />
-      <div className='flex flex-row md:space-x-8 lg:space-x-16 mt-8 md:mx-8'>
-        <div>
-          {props.session ?
-            <Profile user={props.user}/> 
-            :
-            <Sidebar />
-          }
+    <Layout>
+      <div className='mb-6'>
+        <div className='flex flex-row md:space-x-8 lg:space-x-16 mt-8 md:mx-8'>
+          <div>
+            {props.session ?
+              <Profile user={props.user}/> 
+              :
+              <Sidebar />
+            }
+          </div>
+          <Main posts={props.posts} loggedinUser={props.session?.user} refreshData={refreshData}/>
         </div>
-        <Main posts={props.posts} loggedinUser={props.session?.user} refreshData={refreshData}/>
       </div>
-      <div className='block sm:hidden'>
-        <Footer />
-      </div>
-    </div>
+    </Layout>
   )
 }
 
@@ -61,8 +60,12 @@ export const getServerSideProps = async ({ req }) => {
     var posts = await prisma.post.findMany({
       include: {
         author: {
-          select: {
-            name: true
+          include: {
+            user: {
+              select: {
+                name: true
+              }
+            }
           }
         }
       },
@@ -76,7 +79,7 @@ export const getServerSideProps = async ({ req }) => {
     var user: any
 
     if(session){
-      console.log(session)
+      console.log('session', session)
       const userProfile: any = session.user
       user = await prisma.user.findUnique({
         where: {
