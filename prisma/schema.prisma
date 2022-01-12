@@ -18,15 +18,7 @@ model User {
   accounts          Account[]
   sessions          Session[]
   image             String?
-  userProfile       UserProfile? @relation(name: "User")
   createdAt         DateTime @default(now())
-}
-
-model UserProfile {
-  id                Int @default(autoincrement()) @id
-  userId            Int
-  user              User @relation("User", fields: [userId], references: [id])
-  username          String? @unique
   profileImage      String?
   bannerImage       String?
   website           String?
@@ -55,9 +47,9 @@ model Post {
   gameId            Int
   game              Game @relation("LinkedGame", fields: [gameId], references: [id])
   authorId          Int
-  author            UserProfile @relation("Author", fields: [authorId], references: [id])
-  likedBy           UserProfile[] @relation("UserLikedPost", references: [id])
-  savedBy           UserProfile[] @relation("UserSavedPost", references: [id])
+  author            User @relation("Author", fields: [authorId], references: [id])
+  likedBy           User[] @relation("UserLikedPost", references: [id])
+  savedBy           User[] @relation("UserSavedPost", references: [id])
   comments          Comment[] @relation("PostHasComment")
 }
 
@@ -67,9 +59,9 @@ model Comment {
   createdAt         DateTime @default(now())
   post              Post @relation("PostHasComment", fields: [postId], references: [id])
   postId            Int
-  author            UserProfile @relation("UserComment", fields: [authorId], references: [id])
+  author            User @relation("UserComment", fields: [authorId], references: [id])
   authorId          Int
-  likedBy           UserProfile[] @relation("UserLikesComment", references: [id])
+  likedBy           User[] @relation("UserLikesComment", references: [id])
   
   // parentComment     Comment? @relation("CommentParentsComment", fields: [parentCommentId], references: [id])
   // parentCommentId   Int?
