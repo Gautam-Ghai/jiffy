@@ -52,6 +52,12 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
     }
   }
 
+  const game = {
+    connect: {
+      name: req.body.game
+    }
+  }
+
   const user = await prisma.user.findUnique({
     where:{
       name: req.body.name
@@ -81,8 +87,8 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
           data: {
             title: req.body.title,
             video: params.Key,
-            game: 'Valorant',
-            author: author
+            author: author,
+            game: game
           }
         })
 

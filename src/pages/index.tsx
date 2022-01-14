@@ -60,12 +60,8 @@ export const getServerSideProps = async ({ req }) => {
     var posts = await prisma.post.findMany({
       include: {
         author: {
-          include: {
-            user: {
-              select: {
-                name: true
-              }
-            }
+          select: {
+            name: true
           }
         }
       },
@@ -79,7 +75,7 @@ export const getServerSideProps = async ({ req }) => {
     var user: any
 
     if(session){
-      console.log('session', session)
+      console.log('session in home', session)
       const userProfile: any = session.user
       user = await prisma.user.findUnique({
         where: {
@@ -103,5 +99,10 @@ export const getServerSideProps = async ({ req }) => {
     }
   } catch(err){
     console.log('Error', err)
+    return {
+      props: {
+        posts: []
+      }
+    }
   }
 }

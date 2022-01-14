@@ -1,12 +1,9 @@
 import { prisma } from "../lib/prisma";
 
 export const main = async () => {
-    const newPost = await prisma.post.update({
-      where: {
-        id: 1
-      },
+    const newGame = await prisma.game.create({
       data: {
-        title: 'abccd'
+        name: 'Valorant'
       }
     })
 }

@@ -52,6 +52,7 @@ const Upload = (props : Props) => {
       data.append('video', files[0]);
       data.append('title', title);
       data.append('name', props.session.user.name)
+      data.append('game', 'Valorant')
       const requestOptions = {
         method: 'POST',
         body: data
@@ -112,6 +113,7 @@ const Upload = (props : Props) => {
 export const getServerSideProps = async ({ req }) => {
     try{
       const session = await getSession({ req })
+      console.log("session in upload", session)
 
       return {
         props: {
