@@ -72,6 +72,11 @@ export const getServerSideProps = async ({ req }) => {
             image: true
           }
         },
+        likedBy:{
+          select: {
+            name: true
+          }
+        },
         _count: {
           select:{
             likedBy: true,
@@ -89,6 +94,7 @@ export const getServerSideProps = async ({ req }) => {
     var user: any
 
     if(session){
+      console.log(posts)
       console.log('session in home', session)
       const userProfile: any = session.user
       user = await prisma.user.findUnique({

@@ -10,6 +10,10 @@ export interface Post {
   game?: {
     name?: string,
     image?: string
+  },
+  _count?: {
+    likedBy?: number,
+    comments?: number
   }
   authorId?: number
   author?: User

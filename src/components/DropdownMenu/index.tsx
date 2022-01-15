@@ -8,7 +8,7 @@ interface Props {
     name: string,
     function: (() => void) | ((id: string | undefined) => void)
   }[],
-  id?: string
+  id?: number
 }
 
 export default function DropdownMenu(props: Props) {

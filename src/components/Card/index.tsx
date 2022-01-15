@@ -1,7 +1,7 @@
 import Image from 'next/image'
-import React from 'react'
+import React, { useState } from 'react'
 import Video from '../Video'
-import { AiOutlineMore, AiOutlineLike, AiOutlineMessage } from "react-icons/ai"
+import { AiOutlineMore, AiOutlineLike, AiOutlineMessage, AiOutlineDislike } from "react-icons/ai"
 import { IoPaperPlaneOutline, IoBookmarkOutline } from "react-icons/io5"
 import dayjs from 'dayjs'
 import { Post } from '../../utils/types/post'
@@ -21,6 +21,8 @@ interface Props {
 }
 
 const Card = (props: Props) => {
+    const [ isLiked, setIsLiked ] = useState(props.post.likedBy?.some(user => user.name === props.loggedinUser?.name))
+    const [ likes, setLikes ] = useState(props.post._count?.likedBy || 0)
 
     const handleEdit = () => {
 
@@ -32,6 +34,44 @@ const Card = (props: Props) => {
             fetch(`/api/post/${id}`, {method: 'DELETE'})
             .then(res =>{
                 props.refreshData && props.refreshData();
+            }
+            )
+        }
+    }
+
+    const handleLike = async(id: number) => {
+
+        if(props.loggedinUser){ 
+            fetch(`/api/like/${id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    'name': props.loggedinUser.name
+                })
+            })
+            .then(res =>{
+                let abc: number = likes + 1
+                setIsLiked(true)
+                setLikes(abc)
+            }
+            )
+        }
+    }
+
+    const handleDislike = async(id: number) => {
+
+        if(props.loggedinUser){ 
+            fetch(`/api/like/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    'name': props.loggedinUser.name
+                })
+            })
+            .then(res =>{
+                let abc: number = likes - 1
+                setIsLiked(false)
+                setLikes(abc)
             }
             )
         }
@@ -51,7 +91,7 @@ const Card = (props: Props) => {
         <div className="card py-4">
             <div className="flex flex-row my-2 items-center relative">
                 <div className="button h-10 w-10 border-2 border-gray-800 rounded-full">    
-                    <Image src={`${props.post.author.profileImage ? "/assets/user.png" : props.post.author.image}`} height="40" width="40" className="rounded-full" alt="user" />
+                    <Image src={`${props.post.author?.profileImage ? "/assets/user.png" : props.post.author?.image}`} height="40" width="40" className="rounded-full" alt="user" />
                 </div>
                 <div className="h-10 w-10 border-2 border-gray-800 rounded-full -ml-3 z-10">    
                     <Image src="/assets/game.png" height="40" width="40" className="rounded-full" alt="game" />
@@ -73,7 +113,7 @@ const Card = (props: Props) => {
                     <div className='flex flex-row justify-between text-sm py-2'>
                         <div className="flex flex-row space-x-2 text-white items-center">
                             <AiOutlineLike className="text-blue-500 h-4 w-4"/>
-                            <p>{props.post.likesCount}</p>
+                            <p>{likes}</p>
                         </div>
                         <div className="flex flex-row space-x-4 text-white items-center">
                             <div className="flex flex-row space-x-2 text-white items-center">
@@ -81,7 +121,7 @@ const Card = (props: Props) => {
                                 <p>Views</p>
                             </div>
                             <div className="flex flex-row space-x-2 text-white items-center">
-                                <p>{props.post.commentsCount}</p>
+                                <p>{props.post._count?.comments || 0}</p>
                                 <p>Comments</p>
                             </div>
                             <div className="flex flex-row space-x-2 text-white items-center">
@@ -93,10 +133,25 @@ const Card = (props: Props) => {
                 </div>
                 <div className="card-footer p-4">
                     <div className="flex flex-row justify-between lg:justify-evenly text-white text-sm">
-                        <div className="flex flex-row items-center space-x-2 cursor-pointer">
-                            <AiOutlineLike className="h-4 w-4"/>
-                            <p>Like</p>
-                        </div>
+                        {props.loggedinUser ? 
+                            isLiked ? 
+                                <div className="flex flex-row items-center space-x-2 cursor-pointer" onClick={() => handleDislike(props.post.id)}>
+                                    <AiOutlineDislike className="h-4 w-4" />
+                                    <p>Dislike</p>
+                                </div>
+                                :
+                                
+                                <div className="flex flex-row items-center space-x-2 cursor-pointer" onClick={() => handleLike(props.post.id)}>
+                                    <AiOutlineLike className="h-4 w-4"/>
+                                    <p>Like</p>
+                                </div>
+                        : 
+                            <div className="flex flex-row items-center space-x-2 cursor-pointer">
+                                <AiOutlineLike className="h-4 w-4"/>
+                                <p>Like</p>
+                            </div>
+                        }
+                        
                         <div className="flex flex-row items-center space-x-2 cursor-pointer">
                             <AiOutlineMessage className="h-4 w-4"/>
                             <p>Comment</p>
