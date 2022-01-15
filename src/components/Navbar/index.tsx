@@ -45,28 +45,28 @@ const Navbar = (props: Props) => {
                 <div className="hidden md:block">
                     <div className="flex flex-row space-x-6 items-center">
                         <Link href="/" passHref> 
-                            <div className="flex flex-row space-x-2 mt-1 h-10 cursor-pointer border-transparent border-b-4 p-0  text-gray-600 hover:border-blue-600 hover:text-white">
+                            <div className="flex flex-row space-x-2 mt-1 h-10 cursor-pointer border-transparent border-b-4 p-0  text-gray-500 hover:border-blue-600 hover:text-white">
                                 <IoGameControllerOutline className="h-6 w-6" />
                                 <p className='hidden lg:block'>Home</p>
                             </div>
                         </Link>
-                        <div className="flex flex-row space-x-1 mt-1 h-10 cursor-pointer border-transparent border-b-4 p-0  text-gray-600 hover:border-blue-600 hover:text-white">
+                        <div className="flex flex-row space-x-1 mt-1 h-10 cursor-pointer border-transparent border-b-4 p-0  text-gray-500 hover:border-blue-600 hover:text-white">
                             <AiOutlineCompass className="h-6 w-6" />
                             <p className='hidden lg:block'>Explore</p>
                         </div>
-                        <div className="flex flex-row space-x-1 mt-1 h-10 cursor-pointer border-transparent border-b-4 p-0  text-gray-600 hover:border-blue-600 hover:text-white">
+                        <div className="flex flex-row space-x-1 mt-1 h-10 cursor-pointer border-transparent border-b-4 p-0  text-gray-500 hover:border-blue-600 hover:text-white">
                             <HiOutlineUserGroup className="h-6 w-6" />
                             <p className='hidden lg:block'>Communities</p>
                         </div>
                         {session && 
                             <Link href="/upload" passHref> 
-                                <div className="flex flex-row space-x-1 mt-1 h-10 cursor-pointer border-transparent border-b-4 p-0  text-gray-600 hover:border-blue-600 hover:text-white">
+                                <div className="flex flex-row space-x-1 mt-1 h-10 cursor-pointer border-transparent border-b-4 p-0  text-gray-500 hover:border-blue-600 hover:text-white">
                                     <MdOutlineVideoLibrary className="h-6 w-6" />
                                     <p className='hidden lg:block'>Upload Clips</p>
                                 </div>
                             </Link>
                         }
-                        <div className="flex flex-row space-x-1 mt-1 h-10 cursor-pointer border-transparent border-b-4 p-0  text-gray-600 hover:border-blue-600 hover:text-white">
+                        <div className="flex flex-row space-x-1 mt-1 h-10 cursor-pointer border-transparent border-b-4 p-0  text-gray-500 hover:border-blue-600 hover:text-white">
                             <AiOutlineFolderOpen className="h-6 w-6" />
                             <p className='hidden lg:block'>Local Clips</p>
                         </div>
@@ -74,13 +74,13 @@ const Navbar = (props: Props) => {
                 </div>
                 <div className="hidden md:block">
                     <form className="relative">    
-                        <input placeholder='Search' className="input-color w-56 p-1.5 pl-10 border-none rounded-2xl caret-gray-600 text-gray-600 placeholder-gray-600" />
-                        <AiOutlineSearch className="absolute top-1.5 left-2 h-6 w-6 text-gray-600" />
+                        <input placeholder='Search' className="input-color w-56 p-1.5 pl-10 border-none rounded-2xl caret-gray-500 text-gray-500 placeholder-gray-500" />
+                        <AiOutlineSearch className="absolute top-1.5 left-2 h-6 w-6 text-gray-500" />
                     </form>
                 </div>
                     {session ? (
                         <div className='flex flex-row mt-1 space-x-4'>
-                            <IoNotificationsOutline className="h-6 w-6 text-gray-600 hover:text-white cursor-pointer"/>
+                            <IoNotificationsOutline className="h-6 w-6 text-gray-500 hover:text-white cursor-pointer"/>
                             <DropdownMenu options={postOptions}>
                                 <div className="h-7 w-7 cursor-pointer">
                                     <Image src="/assets/avatar.png" alt="image" height="100" width="100" className="rounded-full" layout='responsive'/>

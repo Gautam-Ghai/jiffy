@@ -9,6 +9,7 @@ import Video from "@/components/Video"
 import Button from '@/components/Button';
 import { useRouter } from 'next/router'
 import Layout from "@/components/Layout"
+import Dropdown from "@/components/Dropdown"
 
 
 interface Props {
@@ -77,7 +78,8 @@ const Upload = (props : Props) => {
     return (
         <Layout>
           <div className="flex flex-col justify-center items-center mt-8 mx-2">
-            <input type='text' className="w-96 p-1.5 border-none rounded-lg caret-gray-600 text-gray-600 placeholder-gray-600" placeholder="Title" onChange={(e) => handleChange(e)} value={title}/>
+            <input type='text' className="bg-card-2 w-96 p-1.5 border-none rounded-lg caret-gray-500 text-gray-500 placeholder-gray-500" placeholder="Title" onChange={(e) => handleChange(e)} value={title}/>
+            <Dropdown />
             {files.length !=0 ? files.map((file, key) => (
               <>
                 <div className="card mt-2"  key={key}>
@@ -88,7 +90,7 @@ const Upload = (props : Props) => {
                 </Button>
               </>
             )) : (
-              <div {...getRootProps({ className: 'dropzone' })} className="text-gray-600 border rounded-lg border-gray-600 border-dashed w-full md:w-3/5 py-48 text-center mt-2 cursor-pointer">
+              <div {...getRootProps({ className: 'dropzone' })} className="text-gray-500 border rounded-lg border-gray-500 border-dashed w-full md:w-3/5 py-48 text-center mt-2 cursor-pointer">
                   <input {...getInputProps()} />
                   <p>Drag 'n' drop some files here, or click to select files</p>
               </div>

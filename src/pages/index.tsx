@@ -61,7 +61,21 @@ export const getServerSideProps = async ({ req }) => {
       include: {
         author: {
           select: {
-            name: true
+            name: true,
+            image: true,
+            profileImage: true,
+          }
+        },
+        game:{
+          select:{
+            name: true,
+            image: true
+          }
+        },
+        _count: {
+          select:{
+            likedBy: true,
+            comments: true
           }
         }
       },
@@ -79,12 +93,20 @@ export const getServerSideProps = async ({ req }) => {
       const userProfile: any = session.user
       user = await prisma.user.findUnique({
         where: {
-          name: userProfile.name
+          name: userProfile.name,
+        },
+        include: {
+          _count: {
+            select: {
+              posts: true
+            }
+          }
         }
       })
 
       if(user){
         user = JSON.parse(JSON.stringify(user))
+        console.log('user', user)
       }
     } else {
       user = {error: "Some error"}

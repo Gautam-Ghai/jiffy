@@ -16,13 +16,13 @@ const Profile = (props: Props) => {
             <div className="w-full relative">
                 <Image src="/assets/banner.jpg" alt='banner' height='64' width="384" className="rounded-t-md"/> 
                 <div className="absolute left-4 top-9 lg:top-12">
-                    <Image src="/assets/user.png" alt="user" height="68" width="68" className="rounded-full user-dp" />
+                    <Image src={`${props.user.profileImage ? "/assets/user.png" : props.user.image}`} alt="user" height="68" width="68" className="rounded-full user-dp" />
                 </div>
             </div>
             <div className="ml-28 pb-2">
                 <h1 className="font-bold text-xl">{props.user.name}</h1>
                 {props.user.website &&
-                    <div className="flex flex-row space-x-0 items-center cursor-pointer text-gray-600 hover:text-white">
+                    <div className="flex flex-row space-x-0 items-center cursor-pointer text-gray-500 hover:text-white">
                         <AiOutlineLink className="h-3 w-3" />
                         <p className="text-xs">{props.user.website}</p>
                     </div>
@@ -30,16 +30,16 @@ const Profile = (props: Props) => {
             </div>
             <div className="bg-card-2 flex flex-row justify-evenly h-16 pt-4 my-4">
                 <div className="flex flex-col items-center">
-                    <p>{props.user.postsCount}</p>
-                    <p className='text-xs text-gray-600'>Clips</p>
+                    <p>{props.user._count.posts ? props.user._count.posts : 0}</p>
+                    <p className='text-xs text-gray-500'>Clips</p>
                 </div>
                 <div className="flex flex-col items-center">
                     <p>3.4k</p>
-                    <p className='text-xs text-gray-600'>Followers</p>
+                    <p className='text-xs text-gray-500'>Followers</p>
                 </div>
                 <div className="flex flex-col items-center">
                     <p>54</p>
-                    <p className='text-xs text-gray-600'>Following</p>
+                    <p className='text-xs text-gray-500'>Following</p>
                 </div>
             </div>
             <div className="flex flex-row justify-evenly mb-4">
@@ -60,17 +60,17 @@ const Profile = (props: Props) => {
                 <h1 className="uppercase my-2 text-sm">
                     About
                 </h1>
-                <p className="text-gray-600 text-xs my-2">
+                <p className="text-gray-500 text-xs my-2">
                     {props.user.description}
                 </p>
             </div>
             <div className='flex flex-col px-6 text-xs'>
                 <div className='flex flex-row justify-between border-b-2 border-gray-800 py-2'>
-                    <p className="text-gray-600">Views</p>
+                    <p className="text-gray-500">Views</p>
                     <p>{props.user.viewsCount}</p>
                 </div>
                 <div className='flex flex-row justify-between py-2'>
-                    <p className="text-gray-600">Joined</p>
+                    <p className="text-gray-500">Joined</p>
                     <p>{dayjs(props.user.createdAt).format('MMMM D, YYYY')}</p>
                 </div>
             </div>

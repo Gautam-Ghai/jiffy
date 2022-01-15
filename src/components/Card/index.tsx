@@ -51,18 +51,18 @@ const Card = (props: Props) => {
         <div className="card py-4">
             <div className="flex flex-row my-2 items-center relative">
                 <div className="button h-10 w-10 border-2 border-gray-800 rounded-full">    
-                    <Image src="/assets/user.png" height="40" width="40" className="rounded-full" alt="user" />
+                    <Image src={`${props.post.author.profileImage ? "/assets/user.png" : props.post.author.image}`} height="40" width="40" className="rounded-full" alt="user" />
                 </div>
                 <div className="h-10 w-10 border-2 border-gray-800 rounded-full -ml-3 z-10">    
                     <Image src="/assets/game.png" height="40" width="40" className="rounded-full" alt="game" />
                 </div>
                 <div className='flex flex-col text-white ml-4'>
-                    <p className='text-sm cursor-pointer'>{props.post.author?.name} <span className="text-gray-600 cursor-default">in</span> Valorant</p>
-                    <p className="text-gray-600 text-xs">{dayjs().to(dayjs(props.post.createdAt))}</p>
+                    <p className='text-sm cursor-pointer'>{props.post.author?.name} <span className="text-gray-500 cursor-default">in</span> Valorant</p>
+                    <p className="text-gray-500 text-xs">{dayjs().to(dayjs(props.post.createdAt))}</p>
                 </div>
                 {props.post.author?.name === props.loggedinUser?.name && 
                     <DropdownMenu className='absolute right-0 mr-2' options={postOptions} id={props.post.id}>
-                        <AiOutlineMore className="text-gray-600 cursor-pointer"/>
+                        <AiOutlineMore className="text-gray-500 cursor-pointer"/>
                     </DropdownMenu>
                 }
             </div>
