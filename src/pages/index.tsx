@@ -20,19 +20,6 @@ interface Props {
 
 const Home = (props: Props) => {
   const router = useRouter();
-
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [theData, setTheData] = useState(props.posts);
-
-  const refreshData = () => {
-    router.replace(router.asPath);
-    setIsRefreshing(true);
-  };
-
-  useEffect(() => {
-    setIsRefreshing(false);
-  }, [theData]);
-
   return (
     <Layout>
       <div className='mb-6'>
@@ -44,7 +31,7 @@ const Home = (props: Props) => {
               <Sidebar />
             }
           </div>
-          <Main posts={props.posts} loggedinUser={props.session?.user} refreshData={refreshData}/>
+          <Main posts={props.posts} loggedinUser={props.session?.user} />
         </div>
       </div>
     </Layout>

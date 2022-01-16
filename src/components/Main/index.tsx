@@ -11,8 +11,7 @@ interface Props {
         name: string
         email: string
         image: string,
-    },
-    refreshData?: () => void
+    }
 }
 
 const options = [
@@ -39,8 +38,46 @@ const Main = (props: Props) => {
     const [ posts, setPosts ] = useState(props.posts)
 
     useEffect(() =>{
+        
+        if(props.loggedinUser){
+            switch(option){
+                case 0: fetch(`/api/allPosts`)
+                        .then(async(res) => {
+                            let json = await res.json();
+                            return json
+                        })
+                        .then(result =>{
+                            const allPosts = JSON.parse(result.data)
+                            setPosts(allPosts)
+                        });
+                        break;
 
+                case 1: fetch(`/api/likedPosts/${props.loggedinUser?.name}`)
+                        .then(async(res) => {
+                            let json = await res.json();
+                            return json
+                        })
+                        .then(result =>{
+                            const likedPosts = JSON.parse(result.data)
+                            setPosts(likedPosts.likedPosts)
+                        });
+                        break;
+                        
+            }
+        }
     }, [option])
+
+    const handleDelete = async(id: number) => {
+        const post = posts.find(data=> data.id === id)
+        if(post?.author?.name === props.loggedinUser?.name){ 
+            fetch(`/api/post/${id}`, {method: 'DELETE'})
+            .then(res =>{
+                const newPosts = posts.filter(data => data.id != id)
+                setPosts(newPosts)
+            }
+            )
+        }
+    }
 
     return (
         <div className="flex-grow">
@@ -82,7 +119,7 @@ const Main = (props: Props) => {
             <div className="flex flex-col justify-center xl:flex-row xl:space-x-6 xl:flex-wrap items-center">
                 {posts.map((data, key) => {
                     return ( 
-                    <Card post={data} key={key} loggedinUser={props.loggedinUser} refreshData={props.refreshData} />
+                    <Card post={data} key={key} loggedinUser={props.loggedinUser} handleDelete={handleDelete} />
                     )
                 })}
             </div>

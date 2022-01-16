@@ -90,7 +90,7 @@ const Upload = (props : Props) => {
                 </Button>
               </>
             )) : (
-              <div {...getRootProps({ className: 'dropzone' })} className="text-gray-500 border rounded-lg border-gray-500 border-dashed w-full md:w-3/5 py-48 text-center mt-2 cursor-pointer">
+              <div {...getRootProps({ className: 'dropzone' })} className="card w-full text-gray-500 border rounded-lg border-gray-500 border-dashed py-48 text-center mt-2 cursor-pointer">
                   <input {...getInputProps()} />
                   <p>Drag 'n' drop some files here, or click to select files</p>
               </div>

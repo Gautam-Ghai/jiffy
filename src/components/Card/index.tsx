@@ -17,7 +17,7 @@ interface Props {
         email: string
         image: string
     },
-    refreshData?: () => void
+    handleDelete: (id: number) => void
 }
 
 const Card = (props: Props) => {
@@ -26,17 +26,6 @@ const Card = (props: Props) => {
 
     const handleEdit = () => {
 
-    }
-
-    const handleDelete = async(id: number) => {
-
-        if(props.post.author?.name === props.loggedinUser?.name){ 
-            fetch(`/api/post/${id}`, {method: 'DELETE'})
-            .then(res =>{
-                props.refreshData && props.refreshData();
-            }
-            )
-        }
     }
 
     const handleLike = async(id: number) => {
@@ -84,7 +73,7 @@ const Card = (props: Props) => {
         },
         {
             name: 'Delete',
-            function: handleDelete
+            function: props.handleDelete
         },
     ]
     return (
