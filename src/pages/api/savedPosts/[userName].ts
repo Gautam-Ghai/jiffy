@@ -21,7 +21,7 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
 
   const posts = await prisma.user.findUnique({
     select:{
-      likedPosts:{
+      savedPosts:{
         select:{
           id: true,
           createdAt: true,

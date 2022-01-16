@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router';
 import { prisma } from "../../lib/prisma";
-import Navbar from '@/components/Navbar'
 import Profile from '@/components/Profile'
 import Main from '@/components/Main'
-import Footer from '@/components/Footer'
 import { Post } from '@/utils/types/post'
 import { Session } from "@/utils/types/session";
 import Layout from '@/components/Layout';
 
-import { getSession, signIn, signOut } from "next-auth/react"
+import { getSession } from "next-auth/react"
 
 import Sidebar from '@/components/Sidebar';
 interface Props {
@@ -60,6 +58,11 @@ export const getServerSideProps = async ({ req }) => {
           }
         },
         likedBy:{
+          select: {
+            name: true
+          }
+        },
+        savedBy:{
           select: {
             name: true
           }

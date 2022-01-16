@@ -37,6 +37,11 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
                 name: true
                 }
             },
+            savedBy:{
+                select: {
+                  name: true
+                }
+            },
             _count: {
                 select:{
                 likedBy: true,

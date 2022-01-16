@@ -62,6 +62,18 @@ const Main = (props: Props) => {
                             setPosts(likedPosts.likedPosts)
                         });
                         break;
+
+                case 3: fetch(`/api/savedPosts/${props.loggedinUser?.name}`)
+                        .then(async(res) => {
+                            let json = await res.json();
+                            return json
+                        })
+                        .then(result =>{
+                            const savedPosts = JSON.parse(result.data)
+                            setPosts(savedPosts.savedPosts)
+                            console.log('saved posts',savedPosts.savedPosts)
+                        });
+                        break;
                         
             }
         }
@@ -116,7 +128,7 @@ const Main = (props: Props) => {
                     </div>
                 </div>
             </div>
-            <div className="flex flex-col justify-center xl:flex-row xl:space-x-6 xl:flex-wrap items-center">
+            <div className="flex flex-col justify-left xl:flex-row xl:space-x-6 xl:flex-wrap items-center">
                 {posts.map((data, key) => {
                     return ( 
                     <Card post={data} key={key} loggedinUser={props.loggedinUser} handleDelete={handleDelete} />

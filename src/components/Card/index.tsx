@@ -1,8 +1,8 @@
 import Image from 'next/image'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Video from '../Video'
 import { AiOutlineMore, AiOutlineLike, AiOutlineMessage, AiOutlineDislike } from "react-icons/ai"
-import { IoPaperPlaneOutline, IoBookmarkOutline } from "react-icons/io5"
+import { IoPaperPlaneOutline, IoBookmarkOutline, IoBookmark } from "react-icons/io5"
 import dayjs from 'dayjs'
 import { Post } from '../../utils/types/post'
 import DropdownMenu from '../DropdownMenu'
@@ -23,6 +23,7 @@ interface Props {
 const Card = (props: Props) => {
     const [ isLiked, setIsLiked ] = useState(props.post.likedBy?.some(user => user.name === props.loggedinUser?.name))
     const [ likes, setLikes ] = useState(props.post._count?.likedBy || 0)
+    const [ isSaved, setIsSaved ] = useState(props.post.savedBy?.some(user => user.name === props.loggedinUser?.name))
 
     const handleEdit = () => {
 
@@ -63,6 +64,39 @@ const Card = (props: Props) => {
                 setLikes(abc)
             }
             )
+        }   
+    }
+
+    const handleSave = async(id: number) => {
+        if(props.loggedinUser){ 
+            fetch(`/api/save/${id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    'name': props.loggedinUser.name
+                })
+            })
+            .then(res =>{
+                setIsSaved(true)
+            }
+            )
+        }
+    }
+
+    const handleUnSave = async(id: number) => {
+
+        if(props.loggedinUser){ 
+            fetch(`/api/save/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    'name': props.loggedinUser.name
+                })
+            })
+            .then(res =>{
+                setIsSaved(false)
+            }
+            )
         }
     }
 
@@ -76,6 +110,7 @@ const Card = (props: Props) => {
             function: props.handleDelete
         },
     ]
+
     return (
         <div className="card py-4">
             <div className="flex flex-row my-2 items-center relative">
@@ -149,10 +184,23 @@ const Card = (props: Props) => {
                             <IoPaperPlaneOutline className="h-4 w-4"/>
                             <p>Share</p>
                         </div>
-                        <div className="flex flex-row items-center space-x-2 cursor-pointer">
-                            <IoBookmarkOutline className="h-4 w-4"/>
-                            <p>Save</p>
-                        </div>
+                        {props.loggedinUser ? 
+                            isSaved ? 
+                                <div className="flex flex-row items-center space-x-2 cursor-pointer" onClick={() => handleUnSave(props.post.id)}>
+                                    <IoBookmark className="h-4 w-4" />
+                                    <p>Unsave</p>
+                                </div>
+                                :
+                                <div className="flex flex-row items-center space-x-2 cursor-pointer" onClick={() => handleSave(props.post.id)}>
+                                    <IoBookmarkOutline className="h-4 w-4" />
+                                    <p>Save</p>
+                                </div>
+                        : 
+                                <div className="flex flex-row items-center space-x-2 cursor-pointer">
+                                    <IoBookmarkOutline className="h-4 w-4"/>
+                                    <p>Save</p>
+                                </div>
+                        }
                     </div>
                 </div>
             </div>
