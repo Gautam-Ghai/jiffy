@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { getSession, signIn, signOut } from "next-auth/react"
+import { getSession } from "next-auth/react"
 import { Session } from "@/utils/types/session";
 
 import Navbar from 'components/Navbar';
@@ -81,14 +81,14 @@ const Upload = (props : Props) => {
             <input type='text' className="bg-card-2 w-96 p-1.5 border-none rounded-lg caret-gray-500 text-gray-500 placeholder-gray-500" placeholder="Title" onChange={(e) => handleChange(e)} value={title}/>
             <Dropdown />
             {files.length !=0 ? files.map((file, key) => (
-              <>
-                <div className="card mt-2"  key={key}>
+              <div key={key}>
+                <div className="card mt-2">
                   <Video src={`${file.preview}`} blob={true} />
                 </div>
                 <Button onClick={() => setFiles([])} className='bg-red-600 border-none drop-shadow-md mt-2' variant>
                   Delete
                 </Button>
-              </>
+              </div>
             )) : (
               <div {...getRootProps({ className: 'dropzone' })} className="card w-full text-gray-500 border rounded-lg border-gray-500 border-dashed py-48 text-center mt-2 cursor-pointer">
                   <input {...getInputProps()} />

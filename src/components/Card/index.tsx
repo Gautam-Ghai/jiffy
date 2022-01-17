@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
+import Link from 'next/link'
 import Video from '../Video'
 import { AiOutlineMore, AiOutlineLike, AiOutlineMessage, AiOutlineDislike } from "react-icons/ai"
 import { IoPaperPlaneOutline, IoBookmarkOutline, IoBookmark } from "react-icons/io5"
@@ -121,7 +122,9 @@ const Card = (props: Props) => {
                     <Image src="/assets/game.png" height="40" width="40" className="rounded-full" alt="game" />
                 </div>
                 <div className='flex flex-col text-white ml-4'>
-                    <p className='text-sm cursor-pointer'>{props.post.author?.name} <span className="text-gray-500 cursor-default">in</span> Valorant</p>
+                    <Link href={`/user/${props.post.author?.name}`}>
+                        <p className='text-sm cursor-pointer'><span className='border-b border-white border-opacity-0 hover:border-opacity-100'>{props.post.author?.name}</span><span className="text-gray-500 cursor-default"> in </span>Valorant</p>
+                    </Link>
                     <p className="text-gray-500 text-xs">{dayjs().to(dayjs(props.post.createdAt))}</p>
                 </div>
                 {props.post.author?.name === props.loggedinUser?.name && 
