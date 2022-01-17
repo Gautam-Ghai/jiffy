@@ -15,8 +15,8 @@ const Profile = (props: Props) => {
     return (
         <div className="profile bg-card text-white rounded-md drop-shadow-lg h-auto pb-6 hidden lg:block">
             <div className="w-full relative">
-                <Image src="/assets/banner.jpg" alt='banner' height='64' width="384" className="rounded-t-md"/> 
-                <div className="absolute left-4 top-9 lg:top-12">
+                <Image src="/assets/banner.jpg" alt='banner' height='64' width="380" className="rounded-t-md"/> 
+                <div className="absolute left-4 top-10 xl:top-12">
                     <Image src={`${props.user.profileImage ? "/assets/user.png" : props.user.image}`} alt="user" height="68" width="68" className="rounded-full user-dp" />
                 </div>
             </div>
@@ -31,7 +31,7 @@ const Profile = (props: Props) => {
                     </div>
                 }
             </div>
-            <div className="bg-card-2 flex flex-row justify-evenly h-16 pt-4 my-4">
+            <div className="bg-card-2 flex flex-row justify-evenly h-16 pt-2.5 my-4 mt-8 ">
                 <div className="flex flex-col items-center">
                     <p>{props.user._count?.posts ? props.user._count.posts : 0}</p>
                     <p className='text-xs text-gray-500'>Clips</p>
@@ -59,14 +59,16 @@ const Profile = (props: Props) => {
                     </div>
                 </Button>
             </div>
-            <div className="px-6">
-                <h1 className="uppercase my-2 text-sm">
-                    About
-                </h1>
-                <p className="text-gray-500 text-xs my-2">
-                    {props.user.description}
-                </p>
-            </div>
+            {props.user.description && 
+                <div className="px-6">
+                    <h1 className="uppercase my-2 text-sm">
+                        About
+                    </h1>
+                    <p className="text-gray-500 text-xs my-2">
+                        {props.user.description}
+                    </p>
+                </div>
+            }
             <div className='flex flex-col px-6 text-xs'>
                 <div className='flex flex-row justify-between border-b-2 border-gray-800 py-2'>
                     <p className="text-gray-500">Views</p>

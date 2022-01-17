@@ -11,7 +11,7 @@ export default function Button(props: Props) {
 
     if(props.variant){
         return (
-            <button className={`border-2 border-gray-500 rounded-2xl h-8 w-16 text-xs text-white ${props.className}`} onClick={props.onClick}>
+            <button className={`border-2 drop-shadow-lg border-gray-500 rounded-2xl h-8 w-16 text-xs text-white ${props.className}`} onClick={props.onClick}>
                 {props.children}
             </button>
         )
@@ -19,7 +19,7 @@ export default function Button(props: Props) {
 
     return (
         <div>
-            <button className={`button rounded-2xl h-8 w-16 text-xs text-white ${props.className}`} onClick={props.onClick}>
+            <button className={`button rounded-2xl drop-shadow-lg h-8 w-16 text-xs text-white ${props.className}`} onClick={props.onClick}>
                 {props.children}
             </button>
         </div>

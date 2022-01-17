@@ -114,7 +114,7 @@ const Card = (props: Props) => {
     ]
 
     return (
-        <div className="card py-4">
+        <div className="card py-4 drop-shadow-lg">
             <div className="flex flex-row my-2 items-center relative">
                 <div className="button h-10 w-10 border-2 border-gray-800 rounded-full">    
                     <Image src={`${props.post.author?.profileImage ? "/assets/user.png" : props.post.author?.image}`} height="40" width="40" className="rounded-full" alt="user" />

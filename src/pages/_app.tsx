@@ -2,7 +2,7 @@ import type { AppProps } from 'next/app'
 import { SessionProvider } from "next-auth/react"
 
 import "../../styles/global.sass"
-import 'tailwindcss/tailwind.css';
+import '../../styles/tailwind.css';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
