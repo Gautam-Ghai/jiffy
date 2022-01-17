@@ -6,6 +6,7 @@ import Main from '@/components/Main'
 import Layout from "@/components/Layout"
 import { Post } from '@/utils/types/post'
 import { Session } from "@/utils/types/session";
+import router from 'next/router';
 
 interface Props {
   posts: Post[],
@@ -16,12 +17,16 @@ interface Props {
 const User = (props: Props) => {
     return (
         <Layout>
+          {props.user ? 
             <div className='mb-6'>
-                <div className='flex flex-row md:space-x-8 lg:space-x-16 mt-8 md:mx-8'>
-                    <Profile user={props.user} /> 
-                    <Main posts={props.posts} loggedinUser={props.session?.user}/>
-                </div>
+              <div className='flex flex-row md:space-x-8 lg:space-x-16 mt-8 md:mx-8'>
+                  <Profile user={props.user} /> 
+                  <Main posts={props.posts} loggedinUser={props.session?.user}/>
+              </div>
             </div>
+            :
+            <h1 className='text-white text-5xl font-bold font text-center mt-10'>User Not Found</h1>
+          }
         </Layout>
     )
 }
@@ -29,6 +34,7 @@ const User = (props: Props) => {
 export default User;
 
 export const getServerSideProps = async ({ req, query }) => { 
+  try{
     const username = query.username;
     const session = await getSession({ req })
 
@@ -44,10 +50,13 @@ export const getServerSideProps = async ({ req, query }) => {
         }
       }
     })
+    console.log(user)
 
     user = JSON.parse(JSON.stringify(user))
-    
-    var posts = await prisma.post.findMany({
+
+    var posts = null
+    if(user){
+      posts = await prisma.post.findMany({
         include: {
           author: {
             select: {
@@ -88,6 +97,7 @@ export const getServerSideProps = async ({ req, query }) => {
       });
       
       posts = JSON.parse(JSON.stringify(posts))
+    }
 
       return {
         props: {
@@ -96,5 +106,15 @@ export const getServerSideProps = async ({ req, query }) => {
           session
         }
       }
+  }
+  catch(err){
+    return {
+      props: {
+        user: null,
+        posts: null,
+        session: null
+      }
+    }
+  }
     
 }
