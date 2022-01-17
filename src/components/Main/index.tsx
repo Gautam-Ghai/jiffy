@@ -41,7 +41,8 @@ const Main = (props: Props) => {
         
         if(props.loggedinUser){
             switch(option){
-                case 0: fetch(`/api/allPosts`)
+                case 0: setPosts([])
+                        fetch(`/api/allPosts`)
                         .then(async(res) => {
                             let json = await res.json();
                             return json
@@ -52,7 +53,8 @@ const Main = (props: Props) => {
                         });
                         break;
 
-                case 1: fetch(`/api/likedPosts/${props.loggedinUser?.name}`)
+                case 1: setPosts([])
+                        fetch(`/api/likedPosts/${props.loggedinUser?.name}`)
                         .then(async(res) => {
                             let json = await res.json();
                             return json
@@ -63,7 +65,8 @@ const Main = (props: Props) => {
                         });
                         break;
 
-                case 3: fetch(`/api/savedPosts/${props.loggedinUser?.name}`)
+                case 3: setPosts([])
+                        fetch(`/api/savedPosts/${props.loggedinUser?.name}`)
                         .then(async(res) => {
                             let json = await res.json();
                             return json
