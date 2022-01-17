@@ -83,7 +83,7 @@ const Upload = (props : Props) => {
             {files.length !=0 ? files.map((file, key) => (
               <div key={key}>
                 <div className="card mt-2">
-                  <Video src={`${file.preview}`} blob={true} />
+                  <Video src={`${file.preview}`} />
                 </div>
                 <Button onClick={() => setFiles([])} className='bg-red-600 border-none drop-shadow-md mt-2' variant>
                   Delete

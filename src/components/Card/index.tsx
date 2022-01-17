@@ -7,6 +7,9 @@ import { IoPaperPlaneOutline, IoBookmarkOutline, IoBookmark } from "react-icons/
 import dayjs from 'dayjs'
 import { Post } from '../../utils/types/post'
 import DropdownMenu from '../DropdownMenu'
+import Modal from "@/components/Modal"
+import Comment from "@/components/Comment"
+import CommentInput from '../CommentInput'
 
 var relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(relativeTime)
@@ -23,9 +26,11 @@ interface Props {
 }
 
 const Card = (props: Props) => {
+    const [ isOpen, setIsOpen ] = useState(false)
     const [ isLiked, setIsLiked ] = useState(props.option === 1 ? true : props.post.likedBy?.some(user => user.name === props.loggedinUser?.name))
     const [ likes, setLikes ] = useState(props.post._count?.likedBy || 0)
     const [ isSaved, setIsSaved ] = useState(props.option === 3 ? true : props.post.savedBy?.some(user => user.name === props.loggedinUser?.name))
+    const [ comments, setComments ] = useState(null)
 
     const handleEdit = () => {
 
@@ -101,6 +106,20 @@ const Card = (props: Props) => {
             )
         }
     }
+
+    useEffect(() => {
+        if(isOpen){
+            fetch(`/api/comment/${props.post.id}`)
+            .then(async (res) =>{
+                let json = await res.json();
+                            return json
+            })
+            .then(result =>{
+                const comments = JSON.parse(result.data)
+                setComments(comments)
+            })
+        }
+    }, [isOpen])
 
     const postOptions =[
         {
@@ -179,11 +198,18 @@ const Card = (props: Props) => {
                                 <p>Like</p>
                             </div>
                         }
+                        {props.loggedinUser ? 
+                            <div className="flex flex-row items-center space-x-2 cursor-pointer" onClick={() => setIsOpen(true)}>
+                                <AiOutlineMessage className="h-4 w-4"/>
+                                <p>Comment</p>
+                            </div>
+                        : 
+                            <div className="flex flex-row items-center space-x-2 cursor-pointer">
+                                <AiOutlineMessage className="h-4 w-4"/>
+                                <p>Comment</p>
+                            </div>
+                        }
                         
-                        <div className="flex flex-row items-center space-x-2 cursor-pointer">
-                            <AiOutlineMessage className="h-4 w-4"/>
-                            <p>Comment</p>
-                        </div>
                         <div className="flex flex-row items-center space-x-2 cursor-pointer">
                             <IoPaperPlaneOutline className="h-4 w-4"/>
                             <p>Share</p>
@@ -208,6 +234,15 @@ const Card = (props: Props) => {
                     </div>
                 </div>
             </div>
+            <Modal isOpen={isOpen} setIsOpen={setIsOpen} title='Comments'>
+                <CommentInput id={props.post.id} username={props.loggedinUser?.name} />
+                {comments && comments.map((comment, key) => {
+                    return(
+                    <div key={key} className='overflow-y-auto mt-4 max-h-96'>
+                        <Comment comment={comment.content} date={comment.createdAt} username={comment.author.name} image={comment.author.image} />
+                    </div>)
+                })}
+            </Modal>
         </div>
     )
 }

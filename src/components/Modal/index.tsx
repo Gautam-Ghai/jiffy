@@ -46,7 +46,7 @@ export default function Example(props: Props) {
           >
             <div className="inline-block align-bottom bg-card rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
               <div className="bg-card px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div className="sm:flex sm:items-start">
+                <div className="">
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                     <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-white mb-4">
                       {props.title}
@@ -57,10 +57,10 @@ export default function Example(props: Props) {
                   </div>
                 </div>
               </div>
-              <div className="bg-card-2 px-8 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+              <div className="bg-card-2 px-8 py-3 flex justify-center">
                 <button
                   type="button"
-                  className="mt-3 border-2 border-gray-500 rounded-2xl h-8 w-32 text-xs text-white inline-flex justify-center shadow-sm px-4 py-0.5  font-medium sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                  className="border-2 border-gray-500 rounded-2xl h-8 w-32 text-xs text-white inline-flex justify-center shadow-sm px-4 py-0.5  font-medium sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                   onClick={() => props.setIsOpen(false)}
                   ref={cancelButtonRef}
                 >

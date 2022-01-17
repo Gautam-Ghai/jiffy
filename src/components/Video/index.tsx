@@ -7,7 +7,6 @@ import { AWS_URL } from "../../utils/const";
 
 interface Props {
   src: string
-  blob: boolean
 }
 
 const Video = (props: Props) => {
