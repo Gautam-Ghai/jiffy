@@ -134,7 +134,7 @@ const Card = (props: Props) => {
                 }
             </div>
             <div className='card-body'>  
-                <Video src={props.post.video} />
+                <Video src={props.post.url} />
                 <div className="my-2 mx-2 lg:mx-6">
                     <h1 className='text-white font-semibold text-lg'>{props.post.title}</h1>
                     <div className='flex flex-row justify-between text-sm py-2'>

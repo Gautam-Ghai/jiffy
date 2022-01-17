@@ -34,7 +34,7 @@ const Video = (props: Props) => {
         onPause={onPause}
         ref={videoRef}
         className="video rounded-md"
-        src={props.blob ? props.src : `${AWS_URL}${props.src}`}
+        src={props.src}
         muted={isMuted}
       />
       <div className="controls" onClick={playOrPause}>

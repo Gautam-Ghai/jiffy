@@ -5,7 +5,8 @@ export interface Post {
   updatedAt?: string
   title?: string
   description?: string
-  video?: string
+  url?: string
+  publicId?: string
   gameId?: number
   game?: {
     name?: string,

@@ -43,7 +43,8 @@ model Post {
   updatedAt         DateTime @updatedAt
   title             String
   description       String?
-  video             String
+  url               String
+  publicId          String
   gameId            Int
   game              Game @relation("LinkedGame", fields: [gameId], references: [id])
   authorId          Int

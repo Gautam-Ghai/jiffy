@@ -1,33 +1,17 @@
+import { prisma } from "../../../../lib/prisma";
+import cloudinary from 'cloudinary';
+import { IncomingForm } from 'formidable';
+import { v4 as uuid } from "uuid";
 import { NextApiRequest, NextApiResponse } from "next";
 import nc from 'next-connect';
-import { prisma } from "../../../../lib/prisma";
-import multer from 'multer';
-import AWS from 'aws-sdk';
-import { v4 as uuid } from "uuid";
 
 const fileName = uuid()
 
-const s3 = new AWS.S3({
-    accessKeyId: process.env.AWS_ID,
-    secretAccessKey: process.env.AWS_SECRET,
-    signatureVersion: 'v4'
-})
-
-const videoStorage = multer.memoryStorage();
-
-const videoUpload = multer({
-    storage: videoStorage,
-    limits: {
-    fileSize: 52428800 // 10000000 Bytes = 10 MB
-    },
-    fileFilter(req, file, cb) {
-      // upload only mp4 and mkv format
-      if (!file.originalname.match(/\.(mp4|MPEG-4|mkv|wmv|mov)$/)) { 
-         return cb(new Error('Please upload a video'))
-      }
-      cb(null, true)
-   }
-})
+cloudinary.v2.config({
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET,
+});
 
 const apiRoute = nc<NextApiRequest, NextApiResponse>({
 
@@ -42,51 +26,59 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
       },
   
 })
-.use(videoUpload.single('video'))
 .post(async (req, res) => {
-  console.log(req.body)
+
+  const data = await new Promise((resolve, reject) => {
+    const form = new IncomingForm();
+
+    form.parse(req, (err, fields, files) => {
+      if (err) return reject(err);
+      resolve({ fields, files });
+    });
+  });
+
+  
+  console.log('fields', data?.fields)
   
   const author = {
     connect: {
-      name: req.body.name
+      name: data?.fields?.name
     }
   }
 
   const game = {
     connect: {
-      name: req.body.game
+      name: data?.fields?.game
     }
   }
 
   const user = await prisma.user.findUnique({
     where:{
-      name: req.body.name
+      name: data?.fields?.name
     }
   })
 
-  if(req.body.title.length === 0){
-    res.status(500).json({ error: `Title can't be empty` });
-  }
-
   if(user){
-    if(req.file){
-      const getExt = req.file.originalname.split(".");
-      const ext = getExt[getExt.length - 1]
       
-      const params = {
-        Bucket: process.env.AWS_BUCKET,
-        Key: `${fileName}.${ext}`,
-        Body: req.file.buffer,
-        region: "ca-central-1"
+      if(data?.fields?.title.length === 0){
+        res.status(500).json({ error: `Title can't be empty` });
       }
-  
-      const file = await s3.upload(params).promise()
+    
+      const file = data?.files?.video.filepath;
+
+    if(file){
+      const response = await cloudinary.v2.uploader.upload(file, {
+        resource_type: 'video',
+        public_id: `${fileName}`,
+        upload_preset: 'jiffy-clips'
+      });
       
-      if(file){
+      if(response){
         const result = await prisma.post.create({
           data: {
-            title: req.body.title,
-            video: params.Key,
+            title: data?.fields?.title,
+            url: response.url,
+            publicId: response.public_id,
             author: author,
             game: game
           }
@@ -103,9 +95,6 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
   } else {
     res.status(401).json({ error: `You don't have the access to upload a post` });
   }
-})
-.delete(async (req, res) =>{
-
 })
 
 
