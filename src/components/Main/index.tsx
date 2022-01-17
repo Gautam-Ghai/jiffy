@@ -131,7 +131,7 @@ const Main = (props: Props) => {
             <div className="flex flex-col justify-left xl:flex-row xl:space-x-6 xl:flex-wrap items-center">
                 {posts.map((data, key) => {
                     return ( 
-                    <Card post={data} key={key} loggedinUser={props.loggedinUser} handleDelete={handleDelete} />
+                    <Card post={data} key={key} loggedinUser={props.loggedinUser} handleDelete={handleDelete} option={option} />
                     )
                 })}
             </div>

@@ -16,7 +16,6 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
   
 })
 .get( async(req, res) => {
-
     const posts = await prisma.post.findMany({
         include: {
             author: {

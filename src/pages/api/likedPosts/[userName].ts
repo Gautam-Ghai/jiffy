@@ -1,3 +1,4 @@
+import { Post } from "@/utils/types/post";
 import { NextApiRequest, NextApiResponse } from "next";
 import nc from 'next-connect';
 import { prisma } from "../../../../lib/prisma";
@@ -28,7 +29,8 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
           updatedAt: true,
           title: true,
           description: true,
-          video: true,
+          url: true,
+          publicId: true,
           gameId: true,
           authorId: true,
           author: {
@@ -70,6 +72,7 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
       name: userName
     }
   })
+
   const result= JSON.stringify(posts)
 
   res.send({data: result})

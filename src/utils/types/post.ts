@@ -16,7 +16,7 @@ export interface Post {
     likedBy?: number,
     comments?: number
   }
-  authorId?: number
+  authorId?: number,
   author?: User
   likedBy?: User[]
   savedBy?: User[]

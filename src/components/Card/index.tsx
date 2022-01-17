@@ -18,13 +18,14 @@ interface Props {
         email: string
         image: string
     },
-    handleDelete: (id: number) => void
+    handleDelete: (id: number) => void,
+    option: number
 }
 
 const Card = (props: Props) => {
-    const [ isLiked, setIsLiked ] = useState(props.post.likedBy?.some(user => user.name === props.loggedinUser?.name))
+    const [ isLiked, setIsLiked ] = useState(props.option === 1 ? true : props.post.likedBy?.some(user => user.name === props.loggedinUser?.name))
     const [ likes, setLikes ] = useState(props.post._count?.likedBy || 0)
-    const [ isSaved, setIsSaved ] = useState(props.post.savedBy?.some(user => user.name === props.loggedinUser?.name))
+    const [ isSaved, setIsSaved ] = useState(props.option === 3 ? true : props.post.savedBy?.some(user => user.name === props.loggedinUser?.name))
 
     const handleEdit = () => {
 

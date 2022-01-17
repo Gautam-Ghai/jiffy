@@ -1,3 +1,5 @@
+import { Post } from "./post"
+
 export interface User {
     id?: number,
     name?: string,
@@ -9,5 +11,6 @@ export interface User {
     bannerImage?: string,
     website?: string,
     description?: string,
+    likedPosts? : Post[]
     _count?: { posts?: number }
 }

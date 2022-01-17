@@ -28,6 +28,8 @@ model User {
   savedPosts        Post[] @relation("UserSavedPost")
   comments          Comment[] @relation("UserComment")
   likedComments     Comment[] @relation("UserLikesComment")
+  followers         Follows[] @relation("follower")
+  following         Follows[] @relation("following")
 }
 
 model Game {
@@ -67,6 +69,15 @@ model Comment {
   // parentComment     Comment? @relation("CommentParentsComment", fields: [parentCommentId], references: [id])
   // parentCommentId   Int?
   // childComments     Comment[] @relation("CommentParentsComment")
+}
+
+model Follows {
+  follower          User @relation("follower", fields: [followerId], references: [id])
+  followerId        Int
+  following         User @relation("following", fields: [followingId], references: [id])
+  followingId       Int
+
+  @@id([followerId, followingId])
 }
 
 model Account {
