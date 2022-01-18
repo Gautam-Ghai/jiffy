@@ -66,10 +66,6 @@ const Navbar = (props: Props) => {
                                 </div>
                             </Link>
                         }
-                        <div className="flex flex-row space-x-1 mt-1 h-10 cursor-pointer border-transparent border-b-4 p-0  text-gray-500 hover:border-blue-600 hover:text-white">
-                            <AiOutlineFolderOpen className="h-6 w-6" />
-                            <p className='hidden lg:block'>Local Clips</p>
-                        </div>
                     </div>
                 </div>
                 <div className="hidden md:block">

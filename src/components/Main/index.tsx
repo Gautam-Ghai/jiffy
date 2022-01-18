@@ -65,6 +65,18 @@ const Main = (props: Props) => {
                         });
                         break;
 
+                case 2: setPosts([])
+                        fetch(`/api/postsWithComment/${props.loggedinUser?.name}`)
+                        .then(async(res) => {
+                            let json = await res.json();
+                            return json
+                        })
+                        .then(result =>{
+                            const comments = JSON.parse(result.data)
+                            setPosts(comments)
+                        });
+                        break;
+
                 case 3: setPosts([])
                         fetch(`/api/savedPosts/${props.loggedinUser?.name}`)
                         .then(async(res) => {

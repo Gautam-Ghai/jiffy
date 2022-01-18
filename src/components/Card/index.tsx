@@ -198,18 +198,10 @@ const Card = (props: Props) => {
                                 <p>Like</p>
                             </div>
                         }
-                        {props.loggedinUser ? 
-                            <div className="flex flex-row items-center space-x-2 cursor-pointer" onClick={() => setIsOpen(true)}>
-                                <AiOutlineMessage className="h-4 w-4"/>
-                                <p>Comment</p>
-                            </div>
-                        : 
-                            <div className="flex flex-row items-center space-x-2 cursor-pointer">
-                                <AiOutlineMessage className="h-4 w-4"/>
-                                <p>Comment</p>
-                            </div>
-                        }
-                        
+                        <div className="flex flex-row items-center space-x-2 cursor-pointer" onClick={() => setIsOpen(true)}>
+                            <AiOutlineMessage className="h-4 w-4"/>
+                            <p>Comment</p>
+                        </div>
                         <div className="flex flex-row items-center space-x-2 cursor-pointer">
                             <IoPaperPlaneOutline className="h-4 w-4"/>
                             <p>Share</p>
@@ -234,8 +226,13 @@ const Card = (props: Props) => {
                     </div>
                 </div>
             </div>
+            {props.post.comment && 
+                <Comment comment={props.post.comment.content} date={props.post.comment.createdAt} username={props.post.comment.author?.name} image={props.post.comment.author?.image}/>
+            }
             <Modal isOpen={isOpen} setIsOpen={setIsOpen} title='Comments'>
+            {props.loggedinUser &&
                 <CommentInput id={props.post.id} username={props.loggedinUser?.name} />
+            }
                 {comments && comments.map((comment, key) => {
                     return(
                     <div key={key} className='overflow-y-auto mt-4 max-h-96'>

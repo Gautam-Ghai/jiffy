@@ -20,5 +20,16 @@ export interface Post {
   author?: User
   likedBy?: User[]
   savedBy?: User[]
-  comments?: any[] 
+  comments?: any[]
+  comment?: {
+    content?: string
+    authorId?: number
+    postId?: number
+    createdAt?: string
+    author?: {
+      name?: string,
+      image?: string,
+      profileImage?: string,
+    }
+  }
 }
