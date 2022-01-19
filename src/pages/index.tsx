@@ -29,7 +29,7 @@ const Home = (props: Props) => {
               <Sidebar />
             }
           </div>
-          <Main posts={props.posts} session={props.session} />
+          <Main posts={props.posts} session={props.session} showMenu />
         </div>
       </div>
     </Layout>

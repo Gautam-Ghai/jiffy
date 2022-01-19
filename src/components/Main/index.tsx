@@ -8,7 +8,8 @@ import { Session } from '@/utils/types/session'
 
 interface Props {
     posts: Post[],
-    session?: Session
+    session?: Session,
+    showMenu?: boolean
 }
 
 const options = [
@@ -105,7 +106,7 @@ const Main = (props: Props) => {
 
     return (
         <div className="flex-grow">
-            {props.session && 
+            {props.session && props.showMenu &&
                 <div className="bg-card-2 w-full h-12 rounded-lg">
                     <div className="flex flex-row space-x-6 md:space-x-3 lg:space-x-8 items-center px-2 pt-3 text-sm">
                         {options.map((data, key) => {

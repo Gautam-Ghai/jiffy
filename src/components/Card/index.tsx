@@ -229,9 +229,9 @@ const Card = (props: Props) => {
                 <Comment comment={props.post.comment.content} date={props.post.comment.createdAt} username={props.post.comment.author?.name} image={props.post.comment.author?.image}/>
             }
             <Modal isOpen={isOpen} setIsOpen={setIsOpen} title='Comments'>
-            {props.session &&
-                <CommentInput id={props.post.id} username={props.session?.user.name} />
-            }
+                {props.session &&
+                    <CommentInput id={props.post.id} username={props.session?.user.name} />
+                }
                 {comments && comments.map((comment, key) => {
                     return(
                     <div key={key} className='overflow-y-auto mt-4 max-h-96'>

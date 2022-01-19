@@ -4,22 +4,29 @@ import Profile from '@/components/Profile';
 import React from 'react';
 import { prisma } from "../../../lib/prisma";
 import { Post } from "@/utils/types/post"
+import { getSession } from 'next-auth/react';
+import { Session } from '@/utils/types/session';
 
 interface Props {
-    post: Post
+    post: Post,
+    session: Session
 }
 
 const SinglePost = (props: Props) => {
   return (
       <Layout>
-          <div className='mb-6'>
-        <div className='flex flex-row md:space-x-8 lg:space-x-16 mt-8 md:mx-8'>
-          <div>
-              <Profile user={props.post.author}/> 
-          </div>
-          <Card post={props.post} />
-        </div>
-      </div>
+          {props.post ?
+            <div className='mb-6'>
+                <div className='flex flex-row md:space-x-8 lg:space-x-16 mt-8 md:mx-8'>
+                    <div>
+                        <Profile user={props.post.author} session={props.session} /> 
+                    </div>
+                    <Card post={props.post} session={props.session} />
+                </div>
+            </div>
+            :
+            <h1 className='text-white text-5xl font-bold font text-center mt-10'>Post Not Found</h1>
+          }
       </Layout>
   );
 }
@@ -27,6 +34,7 @@ const SinglePost = (props: Props) => {
 export default SinglePost
 
 export const getServerSideProps = async ({ req, query }) => {
+    const session = await getSession({ req })
     const postId = query.postId;
     const id = parseInt(postId);
 
@@ -74,7 +82,8 @@ export const getServerSideProps = async ({ req, query }) => {
 
         return {
             props: {
-              post
+                session,
+                post
             }
           }
         
@@ -82,6 +91,7 @@ export const getServerSideProps = async ({ req, query }) => {
         console.log('Error', err)
         return {
             props: {
+                session: null,
                 post: null
             }
         }
