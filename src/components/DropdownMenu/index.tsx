@@ -6,7 +6,7 @@ interface Props {
   className?: any,
   options: {
     name: string,
-    function: (() => void) | ((id: string | undefined) => void)
+    function: (() => void) | ((id: number | undefined) => void)
   }[],
   id?: number
 }
@@ -39,7 +39,7 @@ export default function DropdownMenu(props: Props) {
                       className={`${
                         active ? 'bg-blue-600 text-white' : 'text-gray-500'
                       } text-center w-full px-2 py-2 text-sm rounded-md`}
-                      onClick={props.id ? () => opt.function(props.id) : () => opt.function}
+                      onClick={props.id ? () => opt.function(props.id) : () => opt.function()}
                     >
                       {opt.name}
                     </button>
