@@ -7,8 +7,10 @@ import Link from 'next/link'
 import { AiOutlineLink, AiOutlinePlus } from "react-icons/ai"
 import { BiUserPlus } from "react-icons/bi"
 import { User } from '../../utils/types/user'
+import { Session } from '@/utils/types/session'
 interface Props {
-    user: User
+    user: User,
+    session?: Session
 }
 
 const Profile = (props: Props) => {
@@ -45,20 +47,22 @@ const Profile = (props: Props) => {
                     <p className='text-xs text-gray-500'>Following</p>
                 </div>
             </div>
-            <div className="flex flex-row justify-evenly mb-4">
-                <Button className="h-8 w-28 px-4">
-                    <div className="flex flex-row justify-evenly items-center">
-                        <BiUserPlus className="h-4 w-4"/>
-                        Add friend
-                    </div>
-                </Button>
-                <Button className="h-8 w-20" variant={true}>
-                    <div className="flex flex-row justify-evenly items-center px-2">
-                        <AiOutlinePlus />
-                        Follow
-                    </div>
-                </Button>
-            </div>
+            {props.session &&
+                <div className="flex flex-row justify-evenly mb-4">
+                    <Button className="h-8 w-28 px-4">
+                        <div className="flex flex-row justify-evenly items-center">
+                            <BiUserPlus className="h-4 w-4"/>
+                            Add friend
+                        </div>
+                    </Button>
+                    <Button className="h-8 w-20" variant={true}>
+                        <div className="flex flex-row justify-evenly items-center px-2">
+                            <AiOutlinePlus />
+                            Follow
+                        </div>
+                    </Button>
+                </div>
+            }
             {props.user.description && 
                 <div className="px-6">
                     <h1 className="uppercase my-2 text-sm">

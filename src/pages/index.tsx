@@ -24,12 +24,12 @@ const Home = (props: Props) => {
         <div className='flex flex-row md:space-x-8 lg:space-x-16 mt-8 md:mx-8'>
           <div>
             {props.session ?
-              <Profile user={props.user}/> 
+              <Profile user={props.user} session={props.session} /> 
               :
               <Sidebar />
             }
           </div>
-          <Main posts={props.posts} loggedinUser={props.session?.user} />
+          <Main posts={props.posts} session={props.session} />
         </div>
       </div>
     </Layout>

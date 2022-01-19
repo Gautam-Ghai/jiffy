@@ -4,14 +4,11 @@ import Image from 'next/image'
 import Card from '../Card'
 
 import { Post } from '../../utils/types/post'
+import { Session } from '@/utils/types/session'
 
 interface Props {
     posts: Post[],
-    loggedinUser?: {
-        name: string
-        email: string
-        image: string,
-    }
+    session?: Session
 }
 
 const options = [
@@ -39,7 +36,7 @@ const Main = (props: Props) => {
 
     useEffect(() =>{
         
-        if(props.loggedinUser){
+        if(props.session){
             switch(option){
                 case 0: setPosts([])
                         fetch(`/api/allPosts`)
@@ -54,7 +51,7 @@ const Main = (props: Props) => {
                         break;
 
                 case 1: setPosts([])
-                        fetch(`/api/likedPosts/${props.loggedinUser?.name}`)
+                        fetch(`/api/likedPosts/${props.session?.user.name}`)
                         .then(async(res) => {
                             let json = await res.json();
                             return json
@@ -66,7 +63,7 @@ const Main = (props: Props) => {
                         break;
 
                 case 2: setPosts([])
-                        fetch(`/api/postsWithComment/${props.loggedinUser?.name}`)
+                        fetch(`/api/postsWithComment/${props.session?.user.name}`)
                         .then(async(res) => {
                             let json = await res.json();
                             return json
@@ -78,7 +75,7 @@ const Main = (props: Props) => {
                         break;
 
                 case 3: setPosts([])
-                        fetch(`/api/savedPosts/${props.loggedinUser?.name}`)
+                        fetch(`/api/savedPosts/${props.session?.user.name}`)
                         .then(async(res) => {
                             let json = await res.json();
                             return json
@@ -96,7 +93,7 @@ const Main = (props: Props) => {
 
     const handleDelete = async(id: number) => {
         const post = posts.find(data=> data.id === id)
-        if(post?.author?.name === props.loggedinUser?.name){ 
+        if(post?.author?.name === props.session?.user.name){ 
             fetch(`/api/post/${id}`, {method: 'DELETE'})
             .then(res =>{
                 const newPosts = posts.filter(data => data.id != id)
@@ -108,7 +105,7 @@ const Main = (props: Props) => {
 
     return (
         <div className="flex-grow">
-            {props.loggedinUser && 
+            {props.session && 
                 <div className="bg-card-2 w-full h-12 rounded-lg">
                     <div className="flex flex-row space-x-6 md:space-x-3 lg:space-x-8 items-center px-2 pt-3 text-sm">
                         {options.map((data, key) => {
@@ -146,7 +143,7 @@ const Main = (props: Props) => {
             <div className="flex flex-col justify-left xl:flex-row xl:space-x-6 xl:flex-wrap items-center">
                 {posts.map((data, key) => {
                     return ( 
-                    <Card post={data} key={key} loggedinUser={props.loggedinUser} handleDelete={handleDelete} option={option} />
+                    <Card post={data} key={key} session={props.session} handleDelete={handleDelete} option={option} />
                     )
                 })}
             </div>

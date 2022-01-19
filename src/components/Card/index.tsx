@@ -10,26 +10,23 @@ import DropdownMenu from '../DropdownMenu'
 import Modal from "@/components/Modal"
 import Comment from "@/components/Comment"
 import CommentInput from '../CommentInput'
+import { Session } from '@/utils/types/session'
 
 var relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(relativeTime)
 
 interface Props {
     post: Post,
-    loggedinUser?: {
-        name: string
-        email: string
-        image: string
-    },
-    handleDelete: (id: number) => void,
-    option: number
+    session?: Session
+    handleDelete?: (id: number) => void,
+    option?: number
 }
 
 const Card = (props: Props) => {
     const [ isOpen, setIsOpen ] = useState(false)
-    const [ isLiked, setIsLiked ] = useState(props.option === 1 ? true : props.post.likedBy?.some(user => user.name === props.loggedinUser?.name))
+    const [ isLiked, setIsLiked ] = useState(props.option === 1 ? true : props.post.likedBy?.some(user => user.name === props.session?.user.name))
     const [ likes, setLikes ] = useState(props.post._count?.likedBy || 0)
-    const [ isSaved, setIsSaved ] = useState(props.option === 3 ? true : props.post.savedBy?.some(user => user.name === props.loggedinUser?.name))
+    const [ isSaved, setIsSaved ] = useState(props.option === 3 ? true : props.post.savedBy?.some(user => user.name === props.session?.user.name))
     const [ comments, setComments ] = useState(null)
 
     const handleEdit = () => {
@@ -38,12 +35,12 @@ const Card = (props: Props) => {
 
     const handleLike = async(id: number) => {
 
-        if(props.loggedinUser){ 
+        if(props.session){ 
             fetch(`/api/like/${id}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    'name': props.loggedinUser.name
+                    'name': props.session?.user.name
                 })
             })
             .then(res =>{
@@ -57,12 +54,12 @@ const Card = (props: Props) => {
 
     const handleDislike = async(id: number) => {
 
-        if(props.loggedinUser){ 
+        if(props.session){ 
             fetch(`/api/like/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    'name': props.loggedinUser.name
+                    'name': props.session?.user.name
                 })
             })
             .then(res =>{
@@ -75,12 +72,12 @@ const Card = (props: Props) => {
     }
 
     const handleSave = async(id: number) => {
-        if(props.loggedinUser){ 
+        if(props.session){ 
             fetch(`/api/save/${id}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    'name': props.loggedinUser.name
+                    'name': props.session?.user.name
                 })
             })
             .then(res =>{
@@ -92,12 +89,12 @@ const Card = (props: Props) => {
 
     const handleUnSave = async(id: number) => {
 
-        if(props.loggedinUser){ 
+        if(props.session){ 
             fetch(`/api/save/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    'name': props.loggedinUser.name
+                    'name': props.session?.user.name
                 })
             })
             .then(res =>{
@@ -147,7 +144,7 @@ const Card = (props: Props) => {
                     </Link>
                     <p className="text-gray-500 text-xs">{dayjs().to(dayjs(props.post.createdAt))}</p>
                 </div>
-                {props.post.author?.name === props.loggedinUser?.name && 
+                {props.post.author?.name === props.session?.user.name && props.handleDelete &&
                     <DropdownMenu className='absolute right-0 mr-2' options={postOptions} id={props.post.id}>
                         <AiOutlineMore className="text-gray-500 cursor-pointer"/>
                     </DropdownMenu>
@@ -155,32 +152,34 @@ const Card = (props: Props) => {
             </div>
             <div className='card-body'>  
                 <Video src={props.post.url} />
-                <div className="my-2 mx-2 lg:mx-6">
-                    <h1 className='text-white font-semibold text-lg'>{props.post.title}</h1>
-                    <div className='flex flex-row justify-between text-sm py-2'>
-                        <div className="flex flex-row space-x-2 text-white items-center">
-                            <AiOutlineLike className="text-blue-500 h-4 w-4"/>
-                            <p>{likes}</p>
-                        </div>
-                        <div className="flex flex-row space-x-4 text-white items-center">
+                <Link href={`/post/${props.post.id}`}>
+                    <div className="my-2 mx-2 lg:mx-6 cursor-pointer">
+                        <h1 className='text-white font-semibold text-lg'>{props.post.title}</h1>
+                        <div className='flex flex-row justify-between text-sm py-2'>
                             <div className="flex flex-row space-x-2 text-white items-center">
-                                <p>{props.post.viewsCount}</p>
-                                <p>Views</p>
+                                <AiOutlineLike className="text-blue-500 h-4 w-4"/>
+                                <p>{likes}</p>
                             </div>
-                            <div className="flex flex-row space-x-2 text-white items-center">
-                                <p>{props.post._count?.comments || 0}</p>
-                                <p>Comments</p>
-                            </div>
-                            <div className="flex flex-row space-x-2 text-white items-center">
-                                <p>{props.post.sharesCount}</p>
-                                <p>Shares</p>
+                            <div className="flex flex-row space-x-4 text-white items-center">
+                                <div className="flex flex-row space-x-2 text-white items-center">
+                                    <p>{props.post.viewsCount || 0}</p>
+                                    <p>Views</p>
+                                </div>
+                                <div className="flex flex-row space-x-2 text-white items-center">
+                                    <p>{props.post._count?.comments || 0}</p>
+                                    <p>Comments</p>
+                                </div>
+                                <div className="flex flex-row space-x-2 text-white items-center">
+                                    <p>{props.post.sharesCount || 0}</p>
+                                    <p>Shares</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </Link>
                 <div className="card-footer p-4">
                     <div className="flex flex-row justify-between lg:justify-evenly text-white text-sm">
-                        {props.loggedinUser ? 
+                        {props.session ? 
                             isLiked ? 
                                 <div className="flex flex-row items-center space-x-2 cursor-pointer" onClick={() => handleDislike(props.post.id)}>
                                     <AiOutlineDislike className="h-4 w-4" />
@@ -206,7 +205,7 @@ const Card = (props: Props) => {
                             <IoPaperPlaneOutline className="h-4 w-4"/>
                             <p>Share</p>
                         </div>
-                        {props.loggedinUser ? 
+                        {props.session ? 
                             isSaved ? 
                                 <div className="flex flex-row items-center space-x-2 cursor-pointer" onClick={() => handleUnSave(props.post.id)}>
                                     <IoBookmark className="h-4 w-4" />
@@ -230,8 +229,8 @@ const Card = (props: Props) => {
                 <Comment comment={props.post.comment.content} date={props.post.comment.createdAt} username={props.post.comment.author?.name} image={props.post.comment.author?.image}/>
             }
             <Modal isOpen={isOpen} setIsOpen={setIsOpen} title='Comments'>
-            {props.loggedinUser &&
-                <CommentInput id={props.post.id} username={props.loggedinUser?.name} />
+            {props.session &&
+                <CommentInput id={props.post.id} username={props.session?.user.name} />
             }
                 {comments && comments.map((comment, key) => {
                     return(
