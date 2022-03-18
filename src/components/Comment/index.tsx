@@ -11,7 +11,8 @@ interface Props {
     image?: string,
     profileImage?: string,
     username?: string,
-    date?: string
+    date?: string,
+    className?: string
 }
 
 const Comment = (props: Props) => {
@@ -26,8 +27,8 @@ const Comment = (props: Props) => {
                 </Link>
                 <p className='text-gray-500 text-xs'>{dayjs().to(dayjs(props.date))}</p>
             </span>
-            <div className='mb-2'>  
-                <p className='text-sm break-word'>{props.comment}</p>
+            <div className={`mb-2 ${ props.className || "max-w-xs" }`}>  
+                <p className='text-sm break-words'>{props.comment}</p>
             </div>
         </div>
     )

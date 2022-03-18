@@ -28,6 +28,7 @@ const Card = (props: Props) => {
     const [ likes, setLikes ] = useState(props.post._count?.likedBy || 0)
     const [ isSaved, setIsSaved ] = useState(props.option === 3 ? true : props.post.savedBy?.some(user => user.name === props.session?.user.name))
     const [ comments, setComments ] = useState(null)
+    const [ newComment, setNewComment ] = useState('')
 
     const handleEdit = () => {
 
@@ -118,6 +119,10 @@ const Card = (props: Props) => {
         }
     }, [isOpen])
 
+    useEffect(()=> {
+        console.log('image', props.post.game?.logoImage)
+    }, [])
+
     const postOptions =[
         {
             name: 'Edit',
@@ -130,18 +135,28 @@ const Card = (props: Props) => {
     ]
 
     return (
-        <div className="card py-4 drop-shadow-lg">
+        <div className="py-4 drop-shadow-lg max-w-768">
             <div className="flex flex-row my-2 items-center relative">
                 <div className="button h-10 w-10 border-2 border-gray-800 rounded-full">    
                     <Image src={`${props.post.author?.profileImage ? "/assets/user.png" : props.post.author?.image}`} height="40" width="40" className="rounded-full" alt="user" />
                 </div>
-                <div className="h-10 w-10 border-2 border-gray-800 rounded-full -ml-3 z-10">    
-                    <Image src="/assets/game.png" height="40" width="40" className="rounded-full" alt="game" />
+                <div className="h-10 pl-1 pt-1 w-10 border-2 border-gray-800 rounded-full -ml-3 z-10 bg-bgBlue-200">    
+                    <Image src={`${props.post.game?.logoImage ? props.post.game.logoImage : "/assets/game.png"}`} height="28" width="28" className="rounded-full" alt="game" />
                 </div>
                 <div className='flex flex-col text-white ml-4'>
-                    <Link href={`/user/${props.post.author?.name}`}>
-                        <p className='text-sm cursor-pointer'><span className='border-b border-white border-opacity-0 hover:border-opacity-100'>{props.post.author?.name}</span><span className="text-gray-500 cursor-default"> in </span>Valorant</p>
-                    </Link>
+                    <p className='text-sm cursor-pointer'>   
+                        <Link href={`/user/${props.post.author?.name}`}>
+                            <span className='border-b border-white border-opacity-0 hover:border-opacity-100'>
+                                {props.post.author?.name}
+                            </span>
+                        </Link>
+                        <span className="text-gray-500 cursor-default"> in </span >
+                        <Link href={`/game`}>
+                            <span className='border-b border-white border-opacity-0 hover:border-opacity-100'>
+                                {props.post.game?.name}
+                            </span>
+                        </Link>
+                    </p>
                     <p className="text-gray-500 text-xs">{dayjs().to(dayjs(props.post.createdAt))}</p>
                 </div>
                 {props.post.author?.name === props.session?.user.name && props.handleDelete &&
@@ -157,7 +172,7 @@ const Card = (props: Props) => {
                         <h1 className='text-white font-semibold text-lg'>{props.post.title}</h1>
                         <div className='flex flex-row justify-between text-sm py-2'>
                             <div className="flex flex-row space-x-2 text-white items-center">
-                                <AiOutlineLike className="text-blue-500 h-4 w-4"/>
+                                <AiOutlineLike className="text-btnBlue h-4 w-4"/>
                                 <p>{likes}</p>
                             </div>
                             <div className="flex flex-row space-x-4 text-white items-center">
@@ -226,18 +241,20 @@ const Card = (props: Props) => {
                 </div>
             </div>
             {props.post.comment && 
-                <Comment comment={props.post.comment.content} date={props.post.comment.createdAt} username={props.post.comment.author?.name} image={props.post.comment.author?.image}/>
+                <Comment comment={props.post.comment.content} date={props.post.comment.createdAt} username={props.post.comment.author?.name} image={props.post.comment.author?.image} className="max-w-xs sm:max-w-md md:max-w-lg lg:max-w-md" />
             }
             <Modal isOpen={isOpen} setIsOpen={setIsOpen} title='Comments'>
                 {props.session &&
                     <CommentInput id={props.post.id} username={props.session?.user.name} />
                 }
-                {comments && comments.map((comment, key) => {
-                    return(
-                    <div key={key} className='overflow-y-auto mt-4 max-h-96'>
-                        <Comment comment={comment.content} date={comment.createdAt} username={comment.author.name} image={comment.author.image} />
-                    </div>)
-                })}
+                <div className='overflow-y-auto mt-4 max-h-96'>
+                    {comments && comments.map((comment, key) => {
+                        return(
+                        <div key={key} className=''>
+                            <Comment comment={comment.content} date={comment.createdAt} username={comment.author.name} image={comment.author.image} />
+                        </div>)
+                    })}
+                </div>
             </Modal>
         </div>
     )

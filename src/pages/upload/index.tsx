@@ -2,18 +2,19 @@ import React, { useState, useEffect } from 'react'
 
 import { getSession } from "next-auth/react"
 import { Session } from "@/utils/types/session";
-
-import Navbar from 'components/Navbar';
+import { prisma } from "../../../lib/prisma";
 import {useDropzone} from 'react-dropzone';
 import Video from "@/components/Video"
 import Button from '@/components/Button';
 import { useRouter } from 'next/router'
 import Layout from "@/components/Layout"
 import Dropdown from "@/components/Dropdown"
-
+import { FaTrashAlt } from "react-icons/fa"
+import { Game } from '@/utils/types/game'
 
 interface Props {
-    session: Session
+    session: Session,
+    games: Game[]
 } 
 
 const Upload = (props : Props) => {
@@ -21,6 +22,7 @@ const Upload = (props : Props) => {
   const [ files, setFiles ] = useState([]);
   const [ title, setTitle ] = useState('');
   const [ error, setError ] = useState('');
+  const [ selected, setSelected ] = useState(props.games[0])
     const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
         maxFiles:1,
         accept: 'video/mp4, video/x-ms-wmv, video/quicktime',
@@ -53,7 +55,7 @@ const Upload = (props : Props) => {
       data.append('video', files[0]);
       data.append('title', title);
       data.append('name', props.session.user.name)
-      data.append('game', 'Valorant')
+      data.append('game', selected.name)
       const requestOptions = {
         method: 'POST',
         body: data
@@ -77,17 +79,17 @@ const Upload = (props : Props) => {
 
     return (
         <Layout>
-          <div className="flex flex-col justify-center items-center mt-8 mx-2">
+          <div className="w-11/12 sm:w-9/12 md:w-7/12 lg:w-4/12 flex flex-col justify-center items-center mt-8 mx-2">
             <input type='text' className="bg-card-2 w-96 p-1.5 border-none rounded-lg caret-gray-500 text-gray-500 placeholder-gray-500" placeholder="Title" onChange={(e) => handleChange(e)} value={title}/>
-            <Dropdown />
+            <Dropdown data={props.games} selected={selected} setSelected={setSelected} />
             {files.length !=0 ? files.map((file, key) => (
-              <div key={key}>
+              <div key={key} className="relative">
                 <div className="card mt-2">
                   <Video src={`${file.preview}`} />
                 </div>
-                <Button onClick={() => setFiles([])} className='bg-red-600 border-none drop-shadow-md mt-2' variant>
+                <FaTrashAlt onClick={() => setFiles([])} className='text-red-600 h-8 w-auto absolute top-4 right-4 hover:transform hover:rotate-12 cursor-pointer'>
                   Delete
-                </Button>
+                </FaTrashAlt>
               </div>
             )) : (
               <div {...getRootProps({ className: 'dropzone' })} className="card w-full text-gray-500 border rounded-lg border-gray-500 border-dashed py-48 text-center mt-2 cursor-pointer">
@@ -117,9 +119,22 @@ export const getServerSideProps = async ({ req }) => {
       const session = await getSession({ req })
       console.log("session in upload", session)
 
+      var games = await prisma.game.findMany({
+        select: {
+          id: true,
+          name: true,
+          logoImage: true
+        },
+        orderBy:{
+          id: 'asc'
+        }
+      })
+  
+
       return {
         props: {
-          session
+          session,
+          games
         }
       }
     } catch(err){

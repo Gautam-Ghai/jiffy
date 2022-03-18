@@ -27,8 +27,9 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
             },
             game:{
                 select:{
-                name: true,
-                image: true
+                    id: true,
+                    name: true,
+                    logoImage: true
                 }
             },
             likedBy:{

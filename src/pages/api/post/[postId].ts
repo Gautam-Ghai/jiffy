@@ -37,16 +37,24 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
   if(file){
     const del = await cloudinary.v2.uploader.destroy(file.publicId,  {type : 'upload', resource_type : 'video'})
 
-    var result = null;
+    let postResult = null;
+    let commentResult = null;
     if(del.result === 'ok'){
-      result = await prisma.post.delete({
+      commentResult = await prisma.comment.deleteMany({
         where: {
-          id: id
+          postId: id
         }
       })
+      if(commentResult){
+        postResult = await prisma.post.delete({
+          where: {
+            id: id
+          }
+        })
+      }
     }
-
-    if(result && del.result === 'ok') res.status(200).send(result)
+    
+    if(postResult && commentResult && del.result === 'ok') res.status(200).send(postResult)
     else res.status(500).send({Error: "couldn't delete the post"})
   }
   else res.status(500).send({Error: "couldn't delete the post"})

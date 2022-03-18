@@ -9,7 +9,12 @@ import { Session } from '@/utils/types/session'
 interface Props {
     posts: Post[],
     session?: Session,
-    showMenu?: boolean
+    showMenu?: boolean,
+    games: {
+        id: number,
+        name: string,
+        logoImage: string
+    }[]
 }
 
 const options = [
@@ -105,14 +110,14 @@ const Main = (props: Props) => {
     }
 
     return (
-        <div className="flex-grow">
+        <div className="">
             {props.session && props.showMenu &&
-                <div className="bg-card-2 w-full h-12 rounded-lg">
+                <div className="bg-card-2 h-12 rounded-lg">
                     <div className="flex flex-row space-x-6 md:space-x-3 lg:space-x-8 items-center px-2 pt-3 text-sm">
                         {options.map((data, key) => {
                             const active = key === option ? true : false
                             return (
-                                <div className={`flex flex-row h-9 cursor-pointer border-transparent border-b-2 p-0 hover:border-blue-600 hover:text-white ${active ? 'border-blue-600 text-white' : 'text-gray-500'}`} key={key}>
+                                <div className={`flex flex-row h-9 cursor-pointer border-transparent border-b-2 p-0 hover:border-btnBlue hover:text-white ${active ? 'border-btnBlue text-white' : 'text-gray-500'}`} key={key}>
                                     <p className='' onClick={() => setOption(key)}>{data.name}</p>
                                 </div>
                             )
@@ -121,27 +126,20 @@ const Main = (props: Props) => {
                 </div>
             }
 
-            <div className="h-12 w-full mt-4">
-                <div className="flex flex-row space-x-4 items-center px-2 md:px-0">
-                    <div className="flex flex-row border space-x-2 border-gray-800 rounded-3xl p-1.5 items-center px-2.5 text-gray-500 cursor-pointer hover:text-white hover:bg-blue-600">
-                            <Image src="/assets/valorant.svg" width="24" height="24" alt="game" className="rounded-full" />
-                        <p className="hidden md:block truncate ">Valorant</p>
-                    </div>
-                    <div className="flex flex-row border space-x-2 border-gray-800 rounded-3xl p-1.5 items-center px-2.5 text-gray-500 cursor-pointer hover:text-white hover:bg-blue-600">
-                        <Image src="/assets/league.svg" width="24" height="24" alt="game" className="rounded-full" />
-                        <p className="hidden md:block truncate ">League of Legends</p>
-                    </div>
-                    <div className="flex flex-row border space-x-2 border-gray-800 rounded-3xl p-1.5 items-center px-2.5 text-gray-500 cursor-pointer hover:text-white hover:bg-blue-600">
-                        <Image src="/assets/rocket-league.svg" width="24" height="24" alt="game" className="rounded-full" />
-                        <p className="hidden md:block truncate ">Rocket League</p>
-                    </div>
-                    <div className="flex flex-row border space-x-2 border-gray-800 rounded-3xl p-1.5 items-center px-2.5 text-gray-500 cursor-pointer hover:text-white hover:bg-blue-600">
-                        <Image src="/assets/apex.svg" width="24" height="24" alt="game" className="rounded-full" />
-                        <p className="hidden md:block truncate ">Apex Legends</p>
-                    </div>
+            <div className="h-12 mt-4 mb-2">
+                <div className="flex flex-row overflow-x-auto space-x-4 justify-start px-2 pb-2 md:px-0 max-w-768">
+                    {props.games &&
+                        props.games.map((game)=> {
+                            return(
+                            <div className="flex flex-row border space-x-2 border-gray-800 rounded-3xl p-1.5 items-center px-2.5 text-gray-500 cursor-pointer hover:text-white hover:bg-btnBlue" key={`game-${game.id}`}>
+                                <Image src={game.logoImage} width="24" height="24" alt="game" className="rounded-full" />
+                                <p className="hidden md:block truncate ">{game.name}</p>
+                            </div>)
+                        })
+                    }
                 </div>
             </div>
-            <div className="flex flex-col justify-left xl:flex-row xl:space-x-6 xl:flex-wrap items-center">
+            <div className="flex flex-col justify-left items-center">
                 {posts.map((data, key) => {
                     return ( 
                     <Card post={data} key={key} session={props.session} handleDelete={handleDelete} option={option} />

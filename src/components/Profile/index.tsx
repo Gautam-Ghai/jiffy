@@ -17,9 +17,9 @@ const Profile = (props: Props) => {
     return (
         <div className="profile bg-card text-white rounded-md drop-shadow-lg h-auto pb-6 hidden lg:block">
             <div className="w-full relative">
-                <Image src="/assets/banner.jpg" alt='banner' height='64' width="380" className="rounded-t-md"/> 
-                <div className="absolute left-4 top-10 xl:top-12">
-                    <Image src={`${props.user.profileImage ? "/assets/user.png" : props.user.image}`} alt="user" height="68" width="68" className="rounded-full user-dp" />
+                <Image src={`${props.user.bannerImage || "/assets/default_banner_image.png"}`} alt='banner' height='95' width="380" className="rounded-t-md"/> 
+                <div className="absolute left-4 top-16">
+                    <Image src={`${props.user.profileImage || props.user.image || "/assets/user.png"}`} alt="user" height="68" width="68" className="rounded-full user-dp" />
                 </div>
             </div>
             <div className="ml-28 pb-2">
@@ -49,15 +49,15 @@ const Profile = (props: Props) => {
             </div>
             {props.session &&
                 <div className="flex flex-row justify-evenly mb-4">
-                    <Button className="h-8 w-28 px-4">
-                        <div className="flex flex-row justify-evenly items-center">
-                            <BiUserPlus className="h-4 w-4"/>
+                    <Button>
+                        <div className="flex flex-row justify-between items-center">
+                            <BiUserPlus className="h-4 w-4 mr-1"/>
                             Add friend
                         </div>
                     </Button>
-                    <Button className="h-8 w-20" variant={true}>
-                        <div className="flex flex-row justify-evenly items-center px-2">
-                            <AiOutlinePlus />
+                    <Button variant={true}>
+                        <div className="flex flex-row justify-between items-center px-2">
+                            <AiOutlinePlus className="h-4 w-4 mr-1"/>
                             Follow
                         </div>
                     </Button>

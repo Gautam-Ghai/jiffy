@@ -8,7 +8,8 @@ interface Props {
     isOpen: boolean,
     setIsOpen: (e: boolean) => void,
     children: any,
-    title: String
+    title: string,
+    titleClassName?: string
 }
 
 export default function Example(props: Props) {
@@ -48,7 +49,7 @@ export default function Example(props: Props) {
               <div className="bg-card px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="">
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                    <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-white mb-4">
+                    <Dialog.Title as="h3" className={`text-lg leading-6 font-medium text-white mb-4 ${props.titleClassName}`}>
                       {props.title}
                     </Dialog.Title>
                     <div className="mt-2">
@@ -60,7 +61,7 @@ export default function Example(props: Props) {
               <div className="bg-card-2 px-8 py-3 flex justify-center">
                 <button
                   type="button"
-                  className="border-2 border-gray-500 rounded-2xl h-8 w-32 text-xs text-white inline-flex justify-center shadow-sm px-4 py-0.5  font-medium sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                  className="rounded-2xl w-auto text-sm text-gray-500 font-semibold border-2 border-solid border-gray-500 py-1 px-2.5"
                   onClick={() => props.setIsOpen(false)}
                   ref={cancelButtonRef}
                 >

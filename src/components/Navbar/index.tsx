@@ -41,7 +41,7 @@ const Navbar = (props: Props) => {
     return (
         <header className="bg-card h-12 w-full">
             <div className="flex flex-row justify-between pt-1.5 md:justify-evenly mx-4 md:mx-0">
-                <h1 className="text-white font-bold text-xl pt-1 cursor-pointer">JIFFY</h1>
+                <h1 className="text-white font-bold text-xl pt-1 cursor-pointer">WHOOPS</h1>
                 <div className="hidden md:block">
                     <div className="flex flex-row space-x-6 items-center">
                         <Link href="/" passHref> 
@@ -91,10 +91,10 @@ const Navbar = (props: Props) => {
                         </div>
                     )}
             </div>
-            <Modal isOpen={isOpen} setIsOpen={setIsOpen} title='SignIn'>
-                <Button onClick={() => signIn('discord')} className='w-72 h-10'>
+            <Modal isOpen={isOpen} setIsOpen={setIsOpen} title='SignIn' titleClassName="text-center">
+                <button onClick={() => signIn('discord')} className='w-full h-10 rounded-2xl py-1.5 px-2.5 text-lg text-white font-bold bg-discordBlue'>
                     Discord
-                </Button>
+                </button>
             </Modal>
         </header>
     )

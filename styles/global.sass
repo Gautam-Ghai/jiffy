@@ -1,6 +1,6 @@
 @import './variables'
 
-@mixin scrollbars($size, $foreground-color, $background-color: mix($foreground-color, white,  50%))
+@mixin scrollbars($size, $foreground-color, $background-color: mix($foreground-color, white,  90%))
     // For Google Chrome
     ::-webkit-scrollbar
         border-radius: $size
@@ -17,7 +17,7 @@
 
 body
     background-color: $primary-bg-color
-    @include scrollbars(10px, $primary-bg-color, $card-secondary-color)
+    @include scrollbars(10px, $card-color)
 
 .bg-card
     background-color: $card-color
@@ -38,17 +38,9 @@ body
 .button
     background: linear-gradient($button-color-1, $button-color-2)
 
-.card
+.max-w-768
     max-width: 768px
 
-    @media (min-width: 1780px)
-        max-width: 640px
-
-.profile
-    min-width: 320px
-
-    @media (min-width: 1780px)
-        min-width: 380px
 .card-body
     background-color: $card-color
     border-radius: 6px
@@ -95,3 +87,9 @@ body
 
 .control-hidden
     opacity: 0
+
+.max-w-740
+    max-width: 740px !important
+
+.max-w-1200
+    max-width: 1200px !important

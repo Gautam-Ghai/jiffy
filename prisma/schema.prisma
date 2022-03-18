@@ -36,6 +36,10 @@ model Game {
   id                Int @default(autoincrement()) @id
   name              String @unique
   image             String?
+  logoImage         String?
+  profileImage      String?
+  coverImage        String?
+  coverVideo        String?
   posts             Post[] @relation(name: "LinkedGame")
 }
 

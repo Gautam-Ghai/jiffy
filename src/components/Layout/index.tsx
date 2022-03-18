@@ -12,7 +12,9 @@ const Layout = ( props: Props ) => {
     return (
         <>
             <Navbar />
-            {props.children}
+            <div className='mb-6 flex justify-center'>
+                {props.children}
+            </div>
             <div className='block sm:hidden'>
                 <Footer />
             </div>

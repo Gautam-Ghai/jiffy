@@ -4,7 +4,21 @@ module.exports = {
     "./src/components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        bgBlue: {
+          100: "#0d1220",
+          200: "#13192a",
+        },
+        cardBlue: {
+          100: "#171d33",
+          200: '#12182a'
+        },
+        btnBlue: "#008bf9",
+        discordBlue: "#5865f2",
+        twitchBlue: "#6441a5"
+      }
+    },
   },
   plugins: [],
 }

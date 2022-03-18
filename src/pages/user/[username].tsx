@@ -19,7 +19,7 @@ const User = (props: Props) => {
         <Layout>
           {props.user ? 
             <div className='mb-6'>
-              <div className='flex flex-row md:space-x-8 lg:space-x-16 mt-8 md:mx-8'>
+              <div className='flex flex-col mt-8 md:mx-8'>
                   <Profile user={props.user} /> 
                   <Main posts={props.posts} session={props.session}/>
               </div>

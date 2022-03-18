@@ -1,4 +1,5 @@
 import { User } from "./user";
+import { Game } from "./game"
 export interface Post {
   id?: number
   createdAt?: string
@@ -8,10 +9,7 @@ export interface Post {
   url?: string
   publicId?: string
   gameId?: number
-  game?: {
-    name?: string,
-    image?: string
-  },
+  game?: Game,
   _count?: {
     likedBy?: number,
     comments?: number

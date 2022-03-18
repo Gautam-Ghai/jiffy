@@ -4,6 +4,7 @@ import { prisma } from "../../lib/prisma";
 import Profile from '@/components/Profile'
 import Main from '@/components/Main'
 import { Post } from '@/utils/types/post'
+import { Game } from '@/utils/types/game'
 import { Session } from "@/utils/types/session";
 import Layout from '@/components/Layout';
 
@@ -13,23 +14,29 @@ import Sidebar from '@/components/Sidebar';
 interface Props {
     posts: Post[],
     user: any,
-    session: Session
+    session: Session,
+    games: Game[]
 } 
 
 const Home = (props: Props) => {
   const router = useRouter();
   return (
     <Layout>
-      <div className='mb-6'>
-        <div className='flex flex-row md:space-x-8 lg:space-x-16 mt-8 md:mx-8'>
-          <div>
-            {props.session ?
-              <Profile user={props.user} session={props.session} /> 
-              :
-              <Sidebar />
-            }
-          </div>
-          <Main posts={props.posts} session={props.session} showMenu />
+      <div className='container flex flex-row lg:space-x-8 xl:space-x-16 mt-8'>
+        <div>
+          {props.session ?
+            <Profile user={props.user} session={props.session} /> 
+            :
+            <Sidebar />
+          }
+        </div>
+        <Main posts={props.posts} session={props.session} showMenu games={props.games} />
+        <div className='hidden xl:block'>
+          {props.session ?
+            <Profile user={props.user} session={props.session} /> 
+            :
+            <Sidebar />
+          }
         </div>
       </div>
     </Layout>
@@ -42,6 +49,17 @@ export const getServerSideProps = async ({ req }) => {
   try{
     const session = await getSession({ req })
 
+    var games = await prisma.game.findMany({
+      select: {
+        id: true,
+        name: true,
+        logoImage: true
+      },
+      orderBy:{
+        id: 'asc'
+      }
+    })
+
     var posts = await prisma.post.findMany({
       include: {
         author: {
@@ -53,8 +71,9 @@ export const getServerSideProps = async ({ req }) => {
         },
         game:{
           select:{
+            id: true,
             name: true,
-            image: true
+            logoImage: true
           }
         },
         likedBy:{
@@ -78,6 +97,8 @@ export const getServerSideProps = async ({ req }) => {
         createdAt: 'desc'
       }
     });
+
+    console.log('games', games)
     
     posts = JSON.parse(JSON.stringify(posts))
 
@@ -112,7 +133,8 @@ export const getServerSideProps = async ({ req }) => {
       props: {
         posts,
         user,
-        session
+        session,
+        games
       }
     }
   } catch(err){
