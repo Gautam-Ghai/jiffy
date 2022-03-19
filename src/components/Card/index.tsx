@@ -170,7 +170,7 @@ const Card = (props: Props) => {
                             </span>
                         </Link>
                         <span className="text-gray-500 cursor-default"> in </span >
-                        <Link href={`/game`}>
+                        <Link href={`/game/${props.post.game?.name}`}>
                             <span className='border-b border-white border-opacity-0 hover:border-opacity-100'>
                                 {props.post.game?.name}
                             </span>

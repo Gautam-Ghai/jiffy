@@ -75,6 +75,7 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
           resultImage = await prisma.user.update({
             data: {
               bannerImage: response.url,
+              bannerImageId: response.public_id
             },
             where: {
               name: username

@@ -21,6 +21,7 @@ model User {
   createdAt         DateTime @default(now())
   profileImage      String?
   bannerImage       String?
+  bannerImageId     String?
   website           String?
   description       String?
   posts             Post[] @relation("Author")
@@ -35,12 +36,30 @@ model User {
 model Game {
   id                Int @default(autoincrement()) @id
   name              String @unique
-  image             String?
+  releaseDate       String?
+  genre             Genre @default(Action)
   logoImage         String?
   profileImage      String?
   coverImage        String?
   coverVideo        String?
   posts             Post[] @relation(name: "LinkedGame")
+}
+
+enum Genre {
+  First_Person_Shooter
+  Third_Person_Shooter
+  Sandbox
+  Real_Time_Strategy
+  Multiplayer_Online_Battle_Arena
+  Role_Playing
+  Simulation
+  Sports
+  Puzzle
+  Survival
+  Horror
+  Action
+  Adventture
+  Battle_Royale
 }
 
 model Post {
