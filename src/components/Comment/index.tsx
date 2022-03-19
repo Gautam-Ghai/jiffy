@@ -23,7 +23,7 @@ const Comment = (props: Props) => {
             </div>
             <span className='flex flex-col min-w-max'>
                 <Link href={`/user/${props.username}`}>
-                    <p className='text-sm cursor-pointer'>{props.username}</p>
+                    <p className='text-sm cursor-pointer border-b border-white border-opacity-0 hover:border-opacity-100'>{props.username}</p>
                 </Link>
                 <p className='text-gray-500 text-xs'>{dayjs().to(dayjs(props.date))}</p>
             </span>

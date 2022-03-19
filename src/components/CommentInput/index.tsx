@@ -4,8 +4,9 @@ import { AiOutlineSend } from 'react-icons/ai'
 import TextareaAutosize from 'react-textarea-autosize';
 
 interface Props {
-    id?: number
-    username?: string
+    id?: number,
+    username?: string,
+    setParentComment?: (e: string) => void
 }
 
 export default function CommentInput(props: Props) {
@@ -29,6 +30,7 @@ export default function CommentInput(props: Props) {
 
                 fetch(`/api/comment/${props.id}`, requestOptions)
                 .then(res => {
+                    props.setParentComment && props.setParentComment(comment)
                     setComment('')
                     setError('')
                 })

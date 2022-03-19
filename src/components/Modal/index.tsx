@@ -10,6 +10,7 @@ interface Props {
     children: any,
     title: string,
     titleClassName?: string
+    footer?: any
 }
 
 export default function Example(props: Props) {
@@ -59,6 +60,7 @@ export default function Example(props: Props) {
                 </div>
               </div>
               <div className="bg-card-2 px-8 py-3 flex justify-center">
+                {props.footer}
                 <button
                   type="button"
                   className="rounded-2xl w-auto text-sm text-gray-500 font-semibold border-2 border-solid border-gray-500 py-1 px-2.5"

@@ -80,7 +80,7 @@ const Upload = (props : Props) => {
     return (
         <Layout>
           <div className="w-11/12 sm:w-9/12 md:w-7/12 lg:w-4/12 flex flex-col justify-center items-center mt-8 mx-2">
-            <input type='text' className="bg-card-2 w-96 p-1.5 border-none rounded-lg caret-gray-500 text-gray-500 placeholder-gray-500" placeholder="Title" onChange={(e) => handleChange(e)} value={title}/>
+            <input type='text' className="bg-bgBlue-200 w-96 p-1.5 border-none rounded-lg caret-gray-500 text-gray-500 placeholder-gray-500" placeholder="Title" onChange={(e) => handleChange(e)} value={title}/>
             <Dropdown data={props.games} selected={selected} setSelected={setSelected} />
             {files.length !=0 ? files.map((file, key) => (
               <div key={key} className="relative">

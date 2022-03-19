@@ -70,7 +70,7 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
       const response = await cloudinary.v2.uploader.upload(file, {
         resource_type: 'video',
         public_id: `${fileName}`,
-        upload_preset: 'jiffy-clips'
+        upload_preset: 'whoops-clips'
       });
       
       if(response){

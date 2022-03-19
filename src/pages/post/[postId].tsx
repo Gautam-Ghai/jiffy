@@ -1,27 +1,39 @@
 import Card from '@/components/Card';
 import Layout from '@/components/Layout';
 import Profile from '@/components/Profile';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { prisma } from "../../../lib/prisma";
 import { Post } from "@/utils/types/post"
 import { getSession } from 'next-auth/react';
 import { Session } from '@/utils/types/session';
 
+import Comment from "@/components/Comment"
+import CommentInput from '@/components/CommentInput'
+
 interface Props {
     post: Post,
-    session: Session
+    session: Session,
+    comments: any
 }
 
 const SinglePost = (props: Props) => {
+    const [ comments, setComments ] = useState(props.comments)
+
+
   return (
       <Layout>
           {props.post ?
             <div className='mb-6'>
-                <div className='flex flex-row md:space-x-8 lg:space-x-16 mt-8 md:mx-8'>
-                    <div>
-                        <Profile user={props.post.author} session={props.session} /> 
-                    </div>
-                    <Card post={props.post} session={props.session} />
+                <Card post={props.post} session={props.session} disableComment setParentComments={setComments} parentComments={comments}/>
+                <div className='mx-4'>
+                {comments && comments.map((comment, key) => {
+                    return(
+                        <div key={key} className=''>
+                            <Comment comment={comment.content} date={comment.createdAt} username={comment.author.name} image={comment.author.image} />
+                            <hr className='border border-solid border-bgBlue-200 my-1'/>
+                        </div>
+                    )
+                })}
                 </div>
             </div>
             :
@@ -39,7 +51,7 @@ export const getServerSideProps = async ({ req, query }) => {
     const id = parseInt(postId);
 
     try{
-        var post = await prisma.post.findUnique({
+        let post = await prisma.post.findUnique({
             include: {
                 author: {
                     include: {
@@ -80,10 +92,34 @@ export const getServerSideProps = async ({ req, query }) => {
 
         post = JSON.parse(JSON.stringify(post))
 
+        let comments = await prisma.comment.findMany({
+            select: {
+                content: true,
+                createdAt: true,
+                authorId: true,
+                author:{
+                    select:{
+                        name: true,
+                        image: true,
+                        profileImage: true,
+                    }
+                }
+            },
+            where: {
+                postId: id
+            },
+            orderBy:{
+                createdAt: 'desc'
+            }
+        })
+
+        comments = JSON.parse(JSON.stringify(comments))
+
         return {
             props: {
                 session,
-                post
+                post,
+                comments
             }
           }
         
@@ -92,7 +128,8 @@ export const getServerSideProps = async ({ req, query }) => {
         return {
             props: {
                 session: null,
-                post: null
+                post: null,
+                comments: null
             }
         }
     }

@@ -19,7 +19,11 @@ interface Props {
     post: Post,
     session?: Session
     handleDelete?: (id: number) => void,
-    option?: number
+    option?: number,
+    disableComment?: boolean,
+    newCommentCount?: number,
+    setParentComments?: any
+    parentComments?: any[]
 }
 
 const Card = (props: Props) => {
@@ -27,9 +31,9 @@ const Card = (props: Props) => {
     const [ isLiked, setIsLiked ] = useState(props.option === 1 ? true : props.post.likedBy?.some(user => user.name === props.session?.user.name))
     const [ likes, setLikes ] = useState(props.post._count?.likedBy || 0)
     const [ isSaved, setIsSaved ] = useState(props.option === 3 ? true : props.post.savedBy?.some(user => user.name === props.session?.user.name))
-    const [ comments, setComments ] = useState(null)
-    const [ newComment, setNewComment ] = useState('')
-
+    const [ comments, setComments ] = useState(props.parentComments || null)
+    const [ commentCount, setCommentCount ] = useState(props.newCommentCount || props.post._count?.comments || 0)
+    const [parentComment, setParentComment] = useState(null)
     const handleEdit = () => {
 
     }
@@ -113,15 +117,30 @@ const Card = (props: Props) => {
                             return json
             })
             .then(result =>{
-                const comments = JSON.parse(result.data)
-                setComments(comments)
+                const response = JSON.parse(result.data)
+                setComments(response)
+                setCommentCount(response.length)
             })
         }
     }, [isOpen])
 
-    useEffect(()=> {
-        console.log('image', props.post.game?.logoImage)
-    }, [])
+    useEffect(() => {
+        const dateRightNow = new Date(Date.now())
+        const newComment={
+            content: parentComment,
+            date: dateRightNow.toISOString(),
+            author: {
+                name: props.session?.user.name,
+                image: props.session?.user.image
+            }
+        }
+
+        if(parentComment){
+            setComments([newComment, ...comments])
+            props.setParentComments && props.setParentComments([newComment, ...comments])
+            setCommentCount(1+ commentCount)
+        }
+    }, [parentComment])
 
     const postOptions =[
         {
@@ -137,10 +156,10 @@ const Card = (props: Props) => {
     return (
         <div className="py-4 drop-shadow-lg max-w-768">
             <div className="flex flex-row my-2 items-center relative">
-                <div className="button h-10 w-10 border-2 border-gray-800 rounded-full">    
+                <div className="button h-10 w-10 border-2 border-borderBlue rounded-full">    
                     <Image src={`${props.post.author?.profileImage ? "/assets/user.png" : props.post.author?.image}`} height="40" width="40" className="rounded-full" alt="user" />
                 </div>
-                <div className="h-10 pl-1 pt-1 w-10 border-2 border-gray-800 rounded-full -ml-3 z-10 bg-bgBlue-200">    
+                <div className="h-10 pl-1 pt-1 w-10 border-2 border-borderBlue rounded-full -ml-3 z-10 bg-bgBlue-200">    
                     <Image src={`${props.post.game?.logoImage ? props.post.game.logoImage : "/assets/game.png"}`} height="28" width="28" className="rounded-full" alt="game" />
                 </div>
                 <div className='flex flex-col text-white ml-4'>
@@ -181,7 +200,7 @@ const Card = (props: Props) => {
                                     <p>Views</p>
                                 </div>
                                 <div className="flex flex-row space-x-2 text-white items-center">
-                                    <p>{props.post._count?.comments || 0}</p>
+                                    <p>{commentCount || 0}</p>
                                     <p>Comments</p>
                                 </div>
                                 <div className="flex flex-row space-x-2 text-white items-center">
@@ -212,10 +231,17 @@ const Card = (props: Props) => {
                                 <p>Like</p>
                             </div>
                         }
-                        <div className="flex flex-row items-center space-x-2 cursor-pointer" onClick={() => setIsOpen(true)}>
-                            <AiOutlineMessage className="h-4 w-4"/>
-                            <p>Comment</p>
-                        </div>
+                        {props.disableComment || !props.session ? 
+                            <div className="flex flex-row items-center space-x-2 cursor-pointer">
+                                <AiOutlineMessage className="h-4 w-4"/>
+                                <p>Comment</p>
+                            </div>
+                        :
+                            <div className="flex flex-row items-center space-x-2 cursor-pointer" onClick={() => setIsOpen(true)}>
+                                <AiOutlineMessage className="h-4 w-4"/>
+                                <p>Comment</p>
+                            </div>
+                        }
                         <div className="flex flex-row items-center space-x-2 cursor-pointer">
                             <IoPaperPlaneOutline className="h-4 w-4"/>
                             <p>Share</p>
@@ -240,18 +266,24 @@ const Card = (props: Props) => {
                     </div>
                 </div>
             </div>
+            {props.disableComment && props.session &&
+                <>
+                <br />
+                    <CommentInput id={props.post.id} username={props.session?.user.name} setParentComment={setParentComment} />
+                </>}
             {props.post.comment && 
                 <Comment comment={props.post.comment.content} date={props.post.comment.createdAt} username={props.post.comment.author?.name} image={props.post.comment.author?.image} className="max-w-xs sm:max-w-md md:max-w-lg lg:max-w-md" />
             }
             <Modal isOpen={isOpen} setIsOpen={setIsOpen} title='Comments'>
                 {props.session &&
-                    <CommentInput id={props.post.id} username={props.session?.user.name} />
+                    <CommentInput id={props.post.id} username={props.session?.user.name} setParentComment={setParentComment} />
                 }
                 <div className='overflow-y-auto mt-4 max-h-96'>
                     {comments && comments.map((comment, key) => {
                         return(
                         <div key={key} className=''>
                             <Comment comment={comment.content} date={comment.createdAt} username={comment.author.name} image={comment.author.image} />
+                            <hr className='border border-solid border-bgBlue-200 my-1'/>
                         </div>)
                     })}
                 </div>

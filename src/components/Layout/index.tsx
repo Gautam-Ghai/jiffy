@@ -2,6 +2,7 @@ import React, { createContext  } from 'react'
 
 import Navbar from "../Navbar"
 import Footer from '../Footer';
+import { Session } from '@/utils/types/session';
 
 
 interface Props {
