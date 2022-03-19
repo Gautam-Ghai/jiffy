@@ -41,7 +41,7 @@ const Game = (props: Props) => {
             </div>
             <div className='ml-40 sm:ml-72 mt-4 text-white'>
                     <h1 className='text-3xl sm:text-5xl'>{props.game.name}</h1>
-                    <h2 className='text-base sm:text-xl'><span className="text-gray-500">Genre: </span>{props.game.genre}</h2>
+                    <h2 className='text-base sm:text-xl pt-2'><span className="text-gray-500">Genre: </span>{props.game.genre}</h2>
                     <h2 className='text-base sm:text-xl'><span className="text-gray-500">Date released: </span>{props.game.releaseDate}</h2>
                     <h2 className='text-base sm:text-xl'><span className="text-gray-500">Total Posts: </span>{props.game._count.posts}</h2>
             </div>
