@@ -101,6 +101,7 @@ export const getServerSideProps = async ({ req }) => {
     console.log('games', games)
     
     posts = JSON.parse(JSON.stringify(posts))
+    games = JSON.parse(JSON.stringify(games))
 
     var user: any
 

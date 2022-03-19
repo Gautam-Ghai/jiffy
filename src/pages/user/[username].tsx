@@ -6,12 +6,12 @@ import Main from '@/components/Main'
 import Layout from "@/components/Layout"
 import { Post } from '@/utils/types/post'
 import { Session } from "@/utils/types/session";
-import router from 'next/router';
-
+import { Game } from '@/utils/types/game'
 interface Props {
   posts: Post[],
   user: any,
-  session: Session
+  session: Session,
+  games: Game[]
 } 
 
 const User = (props: Props) => {
@@ -20,8 +20,8 @@ const User = (props: Props) => {
           {props.user ? 
             <div className='mb-6'>
               <div className='flex flex-col mt-8 md:mx-8'>
-                  <Profile user={props.user} /> 
-                  <Main posts={props.posts} session={props.session}/>
+                  <Profile user={props.user} page /> 
+                  <Main posts={props.posts} session={props.session} games={props.games} />
               </div>
             </div>
             :
@@ -50,10 +50,10 @@ export const getServerSideProps = async ({ req, query }) => {
         }
       }
     })
-    console.log(user)
+    console.log('here is the user', user)
 
     user = JSON.parse(JSON.stringify(user))
-
+    console.log('here is the user again', user)
     var posts = null
     if(user){
       posts = await prisma.post.findMany({
@@ -67,8 +67,9 @@ export const getServerSideProps = async ({ req, query }) => {
           },
           game:{
             select:{
+              id: true,
               name: true,
-              image: true
+              logoImage: true
             }
           },
           likedBy:{
@@ -95,24 +96,38 @@ export const getServerSideProps = async ({ req, query }) => {
           createdAt: 'desc'
         }
       });
-      
-      posts = JSON.parse(JSON.stringify(posts))
     }
-
-      return {
-        props: {
-          posts,
-          user,
-          session
-        }
+    var games = await prisma.game.findMany({
+      select: {
+        id: true,
+        name: true,
+        logoImage: true
+      },
+      orderBy:{
+        id: 'asc'
       }
-  }
-  catch(err){
+    })
+
+    games = JSON.parse(JSON.stringify(games))
+    
+    posts = JSON.parse(JSON.stringify(posts))
+
+    return {
+      props: {
+        posts,
+        user,
+        session,
+        games
+      }
+    }
+  }catch(err){
+    console.log('error: ',err)
     return {
       props: {
         user: null,
         posts: null,
-        session: null
+        session: null,
+        games: null
       }
     }
   }
