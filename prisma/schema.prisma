@@ -11,15 +11,24 @@ datasource db {
 }
 
 model User {
-  id                Int @default(autoincrement()) @id
-  name              String @unique
-  email             String @unique
-  emailVerified     DateTime?
-  accounts          Account[]
-  sessions          Session[]
-  image             String?
+  id            Int @default(autoincrement()) @id
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  userProfile   UserProfile?
+}
+
+model UserProfile {
+  id                Int  @id @default(autoincrement())
+  user              User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            Int
+  username          String @unique
   createdAt         DateTime @default(now())
   profileImage      String?
+  profileImageId    String?
   bannerImage       String?
   bannerImageId     String?
   website           String?
@@ -31,6 +40,16 @@ model User {
   likedComments     Comment[] @relation("UserLikesComment")
   followers         Follows[] @relation("follower")
   following         Follows[] @relation("following")
+  gameFollows       Game[] @relation("userFollowGame")
+}
+
+model Follows {
+  follower          UserProfile @relation("follower", fields: [followerId], references: [userId], onDelete: Cascade)
+  followerId        Int
+  following         UserProfile @relation("following", fields: [followingId], references: [userId], onDelete: Cascade)
+  followingId       Int
+
+  @@id([followerId, followingId])
 }
 
 model Game {
@@ -41,8 +60,8 @@ model Game {
   logoImage         String?
   profileImage      String?
   coverImage        String?
-  coverVideo        String?
-  posts             Post[] @relation(name: "LinkedGame")
+  posts             Post[] @relation("LinkedGame")
+  userFollows       UserProfile[] @relation("userFollowGame")
 }
 
 enum Genre {
@@ -73,9 +92,9 @@ model Post {
   gameId            Int
   game              Game @relation("LinkedGame", fields: [gameId], references: [id])
   authorId          Int
-  author            User @relation("Author", fields: [authorId], references: [id])
-  likedBy           User[] @relation("UserLikedPost", references: [id])
-  savedBy           User[] @relation("UserSavedPost", references: [id])
+  author            UserProfile @relation("Author", fields: [authorId], references: [id], onDelete: Cascade)
+  likedBy           UserProfile[] @relation("UserLikedPost", references: [id])
+  savedBy           UserProfile[] @relation("UserSavedPost", references: [id])
   comments          Comment[] @relation("PostHasComment")
 }
 
@@ -83,24 +102,15 @@ model Comment {
   id                Int @default(autoincrement()) @id
   content           String
   createdAt         DateTime @default(now())
-  post              Post @relation("PostHasComment", fields: [postId], references: [id])
+  post              Post @relation("PostHasComment", fields: [postId], references: [id], onDelete: Cascade)
   postId            Int
-  author            User @relation("UserComment", fields: [authorId], references: [id])
+  author            UserProfile @relation("UserComment", fields: [authorId], references: [id], onDelete: Cascade)
   authorId          Int
-  likedBy           User[] @relation("UserLikesComment", references: [id])
+  likedBy           UserProfile[] @relation("UserLikesComment", references: [id])
   
   // parentComment     Comment? @relation("CommentParentsComment", fields: [parentCommentId], references: [id])
   // parentCommentId   Int?
   // childComments     Comment[] @relation("CommentParentsComment")
-}
-
-model Follows {
-  follower          User @relation("follower", fields: [followerId], references: [id])
-  followerId        Int
-  following         User @relation("following", fields: [followingId], references: [id])
-  followingId       Int
-
-  @@id([followerId, followingId])
 }
 
 model Account {

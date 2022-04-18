@@ -18,7 +18,7 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
 })
 .get( async(req, res) => {
 
-  const { userName } = req.query;
+  const { username } = req.query;
 
   const posts = await prisma.user.findUnique({
     select:{
@@ -70,7 +70,7 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
       }
     },
     where:{
-      name: userName
+      username: username
     }
   })
 

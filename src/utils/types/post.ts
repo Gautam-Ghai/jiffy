@@ -24,10 +24,6 @@ export interface Post {
     authorId?: number
     postId?: number
     createdAt?: string
-    author?: {
-      name?: string,
-      image?: string,
-      profileImage?: string,
-    }
+    author?: User
   }
 }

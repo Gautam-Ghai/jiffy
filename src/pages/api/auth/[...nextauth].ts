@@ -4,6 +4,8 @@ import DiscordProvider from "next-auth/providers/discord";
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 
 import { prisma } from "../../../../lib/prisma";
+import randomUsername from "@/utils/randomUsername";
+import isUsernameAvailable from "@/utils/isUsernameAvailabe";
 
 const authHandler: NextApiHandler = (req, res) => NextAuth(req, res, options)
 
@@ -16,6 +18,88 @@ const options = {
             clientSecret: process.env.DISCORD_CLIENT_SECRET
         })
     ],
+    adapter: PrismaAdapter(prisma),
+    session: { jwt: true },
+    callbacks: {
+        async jwt({ token, user, account, profile, isNewUser }) {
+            const userProfile = await getOrCreateUserProfile(user.name, user.id)
+            if(user){
+                token.user = user
+                token.userProfile = userProfile
+            }
+            return token
+          },
+        async session({ session, token, user }) {
+            const userProfile = await getOrCreateUserProfile(user.name, user.id)
+            session = {
+                ...session,
+                user: {
+                    id: user.id,
+                    name: userProfile.username,
+                    email: user.email
+                }
+            }
+            console.log(session)
+            return session
+          }
+      }
+}
 
-    adapter: PrismaAdapter(prisma)
+const getOrCreateUserProfile = async(name: string, id: number) =>{
+    try{
+        const user = await prisma.userProfile.findUnique({
+            where:{
+                userId: id
+            }
+        })
+    
+        if(!user){
+            if(name){
+                const nameAvailable = await isUsernameAvailable(name);
+                if(nameAvailable){
+                    const userProfile = await prisma.userProfile.create({
+                        data:{
+                            user: {
+                                connect: {
+                                    id: id
+                                }
+                            },
+                            username: name
+                        }
+                    })
+                    return userProfile
+                }else {
+                    const username = await randomUsername();
+                    const userProfile = await prisma.userProfile.create({
+                        data:{
+                            user: {
+                                connect: {
+                                    id: id
+                                }
+                            },
+                            username: username
+                        }
+                    })
+                    return userProfile
+                }
+            } else {
+                const username = await randomUsername();
+                const userProfile = await prisma.userProfile.create({
+                    data:{
+                        user: {
+                            connect: {
+                                id: id
+                            }
+                        },
+                        username: username
+                    }
+                })
+                return userProfile
+            }
+        } else {
+            return user
+        }
+    } catch(err){
+        console.log(err)
+    }   
 }

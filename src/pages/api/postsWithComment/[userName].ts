@@ -18,14 +18,14 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
 })
 .get( async(req, res) => {
 
-  const { userName } = req.query;
+  const { username } = req.query;
 
   const user = await prisma.user.findUnique({
       select:{
           id: true
       },
       where: {
-          name: userName
+          username: username
       }
   })
 

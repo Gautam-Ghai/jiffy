@@ -78,7 +78,7 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
               bannerImageId: response.public_id
             },
             where: {
-              name: username
+              username: username
             }
           })
         }
@@ -90,7 +90,7 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
           description: data?.fields?.about
         },
         where: {
-          name: username
+          username: username
         }
       })
     }
@@ -102,7 +102,7 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
           website: data?.fields?.website
         },
         where: {
-          name: username
+          username: username
         }
       })
     }

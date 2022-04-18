@@ -20,12 +20,12 @@ const Profile = (props: Props) => {
             <div className="w-full relative">
                 <Image src={`${props.user.bannerImage || "/assets/default_banner_image.png"}`} alt='banner' height={props.page ? '256' : '126'} width={props.page ? '768' : '380'} className="rounded-t-md"/> 
                 <div className={`absolute left-4 ${props.page ? '-bottom-12' : 'top-20'} rounded-full border-4 border-solid border-borderBlue bg-btnBlue h-20 w-20`}>
-                    <Image src={`${props.user.profileImage || props.user.image || "/assets/user.png"}`} alt="user" height="80" width="80" />
+                    <Image src={`${props.user.profileImage || props.user.user.image || "/assets/user.png"}`} alt="user" height="80" width="80" className='rounded-full'/>
                 </div>
             </div>
             <div className="ml-28 pb-2">
-                <Link href={`/user/${props.user.name}`}>
-                    <h1 className="font-bold text-xl cursor-pointer ">{props.user.name}</h1>
+                <Link href={`/user/${props.user.username}`}>
+                    <h1 className="font-bold text-xl cursor-pointer ">{props.user.username}</h1>
                 </Link>
                 {props.user.website &&
                     <div className="flex flex-row space-x-0 items-center cursor-pointer text-gray-500 hover:text-white">

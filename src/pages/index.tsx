@@ -1,16 +1,23 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router';
-import { prisma } from "../../lib/prisma";
+import { getSession } from "next-auth/react"
+
+//Components
 import Profile from '@/components/Profile'
 import Main from '@/components/Main'
+import Layout from '@/components/Layout';
+import Sidebar from '@/components/Sidebar';
+
+//Utils
+import { prisma } from "../../lib/prisma";
 import { Post } from '@/utils/types/post'
 import { Game } from '@/utils/types/game'
 import { Session } from "@/utils/types/session";
-import Layout from '@/components/Layout';
 
-import { getSession } from "next-auth/react"
-
-import Sidebar from '@/components/Sidebar';
+//Queries
+import { getAllPosts } from "@/queries/Post/index"
+import { getUserProfile  } from "@/queries/User/index"
+import { getGames  } from "@/queries/Game/index"
 interface Props {
     posts: Post[],
     user: any,
@@ -49,56 +56,11 @@ export const getServerSideProps = async ({ req }) => {
   try{
     const session = await getSession({ req })
 
-    var games = await prisma.game.findMany({
-      select: {
-        id: true,
-        name: true,
-        logoImage: true
-      },
-      orderBy:{
-        id: 'asc'
-      }
-    })
+    var games = await getGames();
 
-    var posts = await prisma.post.findMany({
-      include: {
-        author: {
-          select: {
-            name: true,
-            image: true,
-            profileImage: true,
-          }
-        },
-        game:{
-          select:{
-            id: true,
-            name: true,
-            logoImage: true
-          }
-        },
-        likedBy:{
-          select: {
-            name: true
-          }
-        },
-        savedBy:{
-          select: {
-            name: true
-          }
-        },
-        _count: {
-          select:{
-            likedBy: true,
-            comments: true
-          }
-        }
-      },
-      orderBy: {
-        createdAt: 'desc'
-      }
-    });
+    var posts = await getAllPosts();
 
-    console.log('games', games)
+    console.log('session in home', session)
     
     posts = JSON.parse(JSON.stringify(posts))
     games = JSON.parse(JSON.stringify(games))
@@ -109,18 +71,7 @@ export const getServerSideProps = async ({ req }) => {
       console.log(posts)
       console.log('session in home', session)
       const userProfile: any = session.user
-      user = await prisma.user.findUnique({
-        where: {
-          name: userProfile.name,
-        },
-        include: {
-          _count: {
-            select: {
-              posts: true
-            }
-          }
-        }
-      })
+      user = await getUserProfile(userProfile.name);
 
       if(user){
         user = JSON.parse(JSON.stringify(user))

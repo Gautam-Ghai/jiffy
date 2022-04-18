@@ -1,18 +1,20 @@
-import React, { useState, useEffect } from 'react'
-import { useRouter } from 'next/router';
-import { prisma } from "../../../lib/prisma";
-import Profile from '@/components/Profile'
-import Main from '@/components/Main'
-import { Post } from '@/utils/types/post'
-import { Game } from '@/utils/types/game'
-import { Session } from "@/utils/types/session";
-import Layout from '@/components/Layout';
+import React, { useState } from 'react'
 import Image from "next/image"
 import { getSession } from "next-auth/react"
+
+//Components
+import Layout from '@/components/Layout';
 import Card from '@/components/Card'
 
+//Utils
+import { GameWithPosts } from '@/utils/types/game'
+import { Session } from "@/utils/types/session";
+
+//Queries
+import { getGame } from '@/queries/Game';
+
 interface Props {
-    game: any[],
+    game: GameWithPosts,
     session: Session
 }
 
@@ -21,7 +23,7 @@ const Game = (props: Props) => {
 
     const handleDelete = async(id: number) => {
         const post = props.game.posts.find(data=> data.id === id)
-        if(post?.author?.name === props.session?.user.name){ 
+        if(post?.author?.username === props.session?.user.name){ 
             fetch(`/api/post/${id}`, {method: 'DELETE'})
             .then(res =>{
                 const newPosts = posts.filter(data => data.id != id)
@@ -63,57 +65,12 @@ const Game = (props: Props) => {
 }
 
 export const getServerSideProps = async ({ req, query }) => {
+    
+    const gamename = query.gamename;
+
     try{
-        const gamename = query.gamename;
         const session = await getSession({ req })
-        var game = await prisma.game.findUnique({
-            include: {
-                _count: {
-                    select:{
-                        posts: true
-                    }
-                },
-                posts:{
-                    include:
-                    {
-                        author: {
-                          select: {
-                            name: true,
-                            image: true,
-                            profileImage: true,
-                          }
-                        },
-                        game:{
-                          select:{
-                            id: true,
-                            name: true,
-                            logoImage: true
-                          }
-                        },
-                        likedBy:{
-                          select: {
-                            name: true
-                          }
-                        },
-                        savedBy:{
-                          select: {
-                            name: true
-                          }
-                        },
-                        _count: {
-                          select:{
-                            likedBy: true,
-                            comments: true
-                          }
-                        }
-                    },
-                    take: 10
-                }
-            },
-            where: {
-                name: gamename
-            }
-        })
+        let game = await getGame(gamename);
 
         game = JSON.parse(JSON.stringify(game))
 
@@ -128,7 +85,8 @@ export const getServerSideProps = async ({ req, query }) => {
         console.log('Error', err)
         return {
           props: {
-            posts: []
+            game: null,
+            session: null
           }
         }
       }

@@ -28,9 +28,9 @@ interface Props {
 
 const Card = (props: Props) => {
     const [ isOpen, setIsOpen ] = useState(false)
-    const [ isLiked, setIsLiked ] = useState(props.option === 1 ? true : props.post.likedBy?.some(user => user.name === props.session?.user.name))
+    const [ isLiked, setIsLiked ] = useState(props.option === 1 ? true : props.post.likedBy?.some(user => user.username === props.session?.user.name))
     const [ likes, setLikes ] = useState(props.post._count?.likedBy || 0)
-    const [ isSaved, setIsSaved ] = useState(props.option === 3 ? true : props.post.savedBy?.some(user => user.name === props.session?.user.name))
+    const [ isSaved, setIsSaved ] = useState(props.option === 3 ? true : props.post.savedBy?.some(user => user.username === props.session?.user.name))
     const [ comments, setComments ] = useState(props.parentComments || null)
     const [ commentCount, setCommentCount ] = useState(props.newCommentCount || props.post._count?.comments || 0)
     const [parentComment, setParentComment] = useState(null)
@@ -157,16 +157,16 @@ const Card = (props: Props) => {
         <div className="py-4 drop-shadow-lg max-w-768">
             <div className="flex flex-row my-2 items-center relative">
                 <div className="button h-10 w-10 border-2 border-borderBlue rounded-full">    
-                    <Image src={`${props.post.author?.profileImage ? "/assets/user.png" : props.post.author?.image}`} height="40" width="40" className="rounded-full" alt="user" />
+                    <Image src={`${props.post.author?.profileImage ? "/assets/user.png" : props.post.author?.user?.image}`} height="40" width="40" className="rounded-full" alt="user" />
                 </div>
                 <div className="h-10 pl-1 pt-1 w-10 border-2 border-borderBlue rounded-full -ml-3 z-10 bg-bgBlue-200">    
                     <Image src={`${props.post.game?.logoImage ? props.post.game.logoImage : "/assets/game.png"}`} height="28" width="28" className="rounded-full" alt="game" />
                 </div>
                 <div className='flex flex-col text-white ml-4'>
                     <p className='text-sm cursor-pointer'>   
-                        <Link href={`/user/${props.post.author?.name}`}>
+                        <Link href={`/user/${props.post.author?.username}`}>
                             <span className='border-b border-white border-opacity-0 hover:border-opacity-100'>
-                                {props.post.author?.name}
+                                {props.post.author?.username}
                             </span>
                         </Link>
                         <span className="text-gray-500 cursor-default"> in </span >
@@ -178,7 +178,7 @@ const Card = (props: Props) => {
                     </p>
                     <p className="text-gray-500 text-xs">{dayjs().to(dayjs(props.post.createdAt))}</p>
                 </div>
-                {props.post.author?.name === props.session?.user.name && props.handleDelete &&
+                {props.post.author?.username === props.session?.user.name && props.handleDelete &&
                     <DropdownMenu className='absolute right-0 mr-2' options={postOptions} id={props.post.id}>
                         <AiOutlineMore className="text-gray-500 cursor-pointer"/>
                     </DropdownMenu>

@@ -99,7 +99,7 @@ const Main = (props: Props) => {
 
     const handleDelete = async(id: number) => {
         const post = posts.find(data=> data.id === id)
-        if(post?.author?.name === props.session?.user.name){ 
+        if(post?.author?.username === props.session?.user.name){ 
             fetch(`/api/post/${id}`, {method: 'DELETE'})
             .then(res =>{
                 const newPosts = posts.filter(data => data.id != id)

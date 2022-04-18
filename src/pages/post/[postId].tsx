@@ -1,19 +1,24 @@
+import React, { useState } from 'react';
+import { getSession } from 'next-auth/react';
+
+//Components
 import Card from '@/components/Card';
 import Layout from '@/components/Layout';
-import Profile from '@/components/Profile';
-import React, { useEffect, useState } from 'react';
-import { prisma } from "../../../lib/prisma";
-import { Post } from "@/utils/types/post"
-import { getSession } from 'next-auth/react';
-import { Session } from '@/utils/types/session';
-
 import Comment from "@/components/Comment"
-import CommentInput from '@/components/CommentInput'
+
+//Utils
+import { Post } from "@/utils/types/post"
+import { Session } from '@/utils/types/session';
+import { Comment as CommentInterface } from "@/utils/types/comment"
+
+//Queries
+import { getSpecificPost } from '@/queries/Post';
+import { getAllComments } from '@/queries/Comment';
 
 interface Props {
     post: Post,
     session: Session,
-    comments: any
+    comments: CommentInterface[]
 }
 
 const SinglePost = (props: Props) => {
@@ -29,7 +34,7 @@ const SinglePost = (props: Props) => {
                 {comments && comments.map((comment, key) => {
                     return(
                         <div key={key} className=''>
-                            <Comment comment={comment.content} date={comment.createdAt} username={comment.author.name} image={comment.author.image} />
+                            <Comment comment={comment.content} date={comment.createdAt} username={comment.author?.username} profileImage={comment.author?.profileImage || comment.author?.user?.image} />
                             <hr className='border border-solid border-bgBlue-200 my-1'/>
                         </div>
                     )
@@ -46,72 +51,17 @@ const SinglePost = (props: Props) => {
 export default SinglePost
 
 export const getServerSideProps = async ({ req, query }) => {
-    const session = await getSession({ req })
     const postId = query.postId;
     const id = parseInt(postId);
 
     try{
-        let post = await prisma.post.findUnique({
-            include: {
-                author: {
-                    include: {
-                        _count: {
-                            select: {
-                                posts: true
-                            }
-                        }
-                    }
-                },
-                game:{
-                    select:{
-                        name: true,
-                        image: true
-                    }
-                },
-                likedBy:{
-                    select: {
-                        name: true
-                    }
-                },
-                savedBy:{
-                    select: {
-                        name: true
-                    }
-                },
-                _count: {
-                    select:{
-                        likedBy: true,
-                        comments: true
-                    }
-                }
-            },
-            where:{
-                id: id
-            }
-        });
+        const session = await getSession({ req })
+
+        let post = await getSpecificPost(id);
 
         post = JSON.parse(JSON.stringify(post))
 
-        let comments = await prisma.comment.findMany({
-            select: {
-                content: true,
-                createdAt: true,
-                authorId: true,
-                author:{
-                    select:{
-                        name: true,
-                        image: true,
-                        profileImage: true,
-                    }
-                }
-            },
-            where: {
-                postId: id
-            },
-            orderBy:{
-                createdAt: 'desc'
-            }
-        })
+        let comments = await getAllComments(id)
 
         comments = JSON.parse(JSON.stringify(comments))
 

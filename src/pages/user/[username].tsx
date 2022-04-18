@@ -40,7 +40,7 @@ export const getServerSideProps = async ({ req, query }) => {
 
     var user = await prisma.user.findUnique({
       where: {
-        name: username,
+        username: username,
       },
       include: {
         _count: {
