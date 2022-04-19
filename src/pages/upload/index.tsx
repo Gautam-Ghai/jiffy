@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from 'react'
-
 import { getSession } from "next-auth/react"
-import { Session } from "@/utils/types/session";
-import { prisma } from "../../../lib/prisma";
 import {useDropzone} from 'react-dropzone';
+import { useRouter } from 'next/router'
+import { FaLessThanEqual, FaTrashAlt } from "react-icons/fa"
+
+//Components
 import Video from "@/components/Video"
 import Button from '@/components/Button';
-import { useRouter } from 'next/router'
 import Layout from "@/components/Layout"
 import Dropdown from "@/components/Dropdown"
-import { FaTrashAlt } from "react-icons/fa"
+
+//Utils
+import { Session } from "@/utils/types/session";
 import { Game } from '@/utils/types/game'
+
+//Queries
+import { getGames } from '@/queries/Game';
 
 interface Props {
     session: Session,
@@ -24,7 +29,9 @@ const Upload = (props : Props) => {
   const [ error, setError ] = useState('');
   const [ selected, setSelected ] = useState(props.games[0])
     const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+        multiple: false,
         maxFiles:1,
+        maxSize: 15728640,
         accept: 'video/mp4, video/x-ms-wmv, video/quicktime',
         onDrop: acceptedFiles => {
           setFiles(acceptedFiles.map(file => Object.assign(file, {
@@ -119,16 +126,7 @@ export const getServerSideProps = async ({ req }) => {
       const session = await getSession({ req })
       console.log("session in upload", session)
 
-      var games = await prisma.game.findMany({
-        select: {
-          id: true,
-          name: true,
-          logoImage: true
-        },
-        orderBy:{
-          id: 'asc'
-        }
-      })
+      var games = await getGames();
   
 
       return {
@@ -139,6 +137,12 @@ export const getServerSideProps = async ({ req }) => {
       }
     } catch(err){
       console.log('Error', err)
+      return {
+        props: {
+          session: null,
+          games: null
+        }
+      }
     }
   }
 

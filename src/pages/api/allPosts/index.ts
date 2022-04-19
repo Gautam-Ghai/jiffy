@@ -1,6 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import nc from 'next-connect';
+
+//Utils
 import { prisma } from "../../../../lib/prisma";
+
+//Queries
+import { getAllPosts } from "@/queries/Post";
 
 const apiRoute = nc<NextApiRequest, NextApiResponse>({
 
@@ -16,47 +21,11 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
   
 })
 .get( async(req, res) => {
-    const posts = await prisma.post.findMany({
-        include: {
-            author: {
-                select: {
-                name: true,
-                image: true,
-                profileImage: true,
-                }
-            },
-            game:{
-                select:{
-                    id: true,
-                    name: true,
-                    logoImage: true
-                }
-            },
-            likedBy:{
-                select: {
-                name: true
-                }
-            },
-            savedBy:{
-                select: {
-                  name: true
-                }
-            },
-            _count: {
-                select:{
-                likedBy: true,
-                comments: true
-                }
-            }
-        },
-        orderBy: {
-            createdAt: 'desc'
-        }
-    });
+    const posts = await getAllPosts();
   
-  const result= JSON.stringify(posts)
+    const result= JSON.stringify(posts)
 
-  res.send({data: result})
+    res.send({data: result})
 })
 
 export default apiRoute;

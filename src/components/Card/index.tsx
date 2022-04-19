@@ -33,7 +33,7 @@ const Card = (props: Props) => {
     const [ isSaved, setIsSaved ] = useState(props.option === 3 ? true : props.post.savedBy?.some(user => user.username === props.session?.user.name))
     const [ comments, setComments ] = useState(props.parentComments || null)
     const [ commentCount, setCommentCount ] = useState(props.newCommentCount || props.post._count?.comments || 0)
-    const [parentComment, setParentComment] = useState(null)
+    const [parentComment, setParentComment] = useState('')
     const handleEdit = () => {
 
     }
@@ -130,8 +130,11 @@ const Card = (props: Props) => {
             content: parentComment,
             date: dateRightNow.toISOString(),
             author: {
-                name: props.session?.user.name,
-                image: props.session?.user.image
+                username: props.session?.user.name,
+                profileImage: props.session?.user.profileImage,
+                user:{
+                    image: props.session?.user.image
+                }
             }
         }
 
@@ -156,8 +159,8 @@ const Card = (props: Props) => {
     return (
         <div className="py-4 drop-shadow-lg max-w-768">
             <div className="flex flex-row my-2 items-center relative">
-                <div className="button h-10 w-10 border-2 border-borderBlue rounded-full">    
-                    <Image src={`${props.post.author?.profileImage ? "/assets/user.png" : props.post.author?.user?.image}`} height="40" width="40" className="rounded-full" alt="user" />
+                <div className="bg-btnBlue h-10 w-10 border-2 border-borderBlue rounded-full">    
+                    <Image src={`${props.post.author?.profileImage || props.post.author?.user?.image || "/assets/user.png"}`} height="36" width="36" className="rounded-full" alt="user" />
                 </div>
                 <div className="h-10 pl-1 pt-1 w-10 border-2 border-borderBlue rounded-full -ml-3 z-10 bg-bgBlue-200">    
                     <Image src={`${props.post.game?.logoImage ? props.post.game.logoImage : "/assets/game.png"}`} height="28" width="28" className="rounded-full" alt="game" />
@@ -272,7 +275,7 @@ const Card = (props: Props) => {
                     <CommentInput id={props.post.id} username={props.session?.user.name} setParentComment={setParentComment} />
                 </>}
             {props.post.comment && 
-                <Comment comment={props.post.comment.content} date={props.post.comment.createdAt} username={props.post.comment.author?.name} image={props.post.comment.author?.image} className="max-w-xs sm:max-w-md md:max-w-lg lg:max-w-md" />
+                <Comment comment={props.post.comment.content} date={props.post.comment.createdAt} username={props.post.comment.author?.username} image={props.post.comment.author?.profileImage || props.post.comment.author?.user?.image} className="max-w-xs sm:max-w-md md:max-w-lg lg:max-w-md" />
             }
             <Modal isOpen={isOpen} setIsOpen={setIsOpen} title='Comments'>
                 {props.session &&
@@ -282,7 +285,7 @@ const Card = (props: Props) => {
                     {comments && comments.map((comment, key) => {
                         return(
                         <div key={key} className=''>
-                            <Comment comment={comment.content} date={comment.createdAt} username={comment.author.name} image={comment.author.image} />
+                            <Comment comment={comment.content} date={comment.createdAt} username={comment.author.username} image={comment.author.profileImage || comment.author.user.image} />
                             <hr className='border border-solid border-bgBlue-200 my-1'/>
                         </div>)
                     })}

@@ -7,6 +7,11 @@ import Layout from "@/components/Layout"
 import { Post } from '@/utils/types/post'
 import { Session } from "@/utils/types/session";
 import { Game } from '@/utils/types/game'
+import { getUserProfile } from '@/queries/User';
+import { getAllPostsFromUser } from '@/queries/Post';
+import { getGames } from '@/queries/Game';
+import Button from '@/components/Button';
+import { useRouter } from 'next/router';
 interface Props {
   posts: Post[],
   user: any,
@@ -15,17 +20,30 @@ interface Props {
 } 
 
 const User = (props: Props) => {
+  const router = useRouter()
+
     return (
         <Layout>
           {props.user ? 
-            <div className='mb-6'>
-              <div className='flex flex-col mt-8 md:mx-8'>
-                  <Profile user={props.user} page /> 
-                  <Main posts={props.posts} session={props.session} games={props.games} />
+            <div className={`container flex md:space-x-8 xl:space-x-16 mt-8 ${props.posts.length > 0 ? 'flex-col md:flex-row' : 'flex-col'} `}>
+              <div className='w-auto flex justify-center'>
+                <Profile user={props.user} /> 
               </div>
+                {props.posts.length > 0 ?
+                  <Main posts={props.posts} session={props.session} games={props.games} />
+                  :
+                  props.session ? (
+                    <div className='flex flex-col items-center justify-center'>
+                      <h1 className='text-center text-white font-semibold text-xl my-4'>No clips to show yet...</h1>
+                      <Button onClick={() => router.push("/upload")}>Add a New Clip</Button>
+                    </div>
+                  ) 
+                  :
+                  <h1 className='text-center text-white font-semibold text-xl mt-4'>No clips to show yet...</h1>
+                }
             </div>
             :
-            <h1 className='text-white text-5xl font-bold font text-center mt-10'>User Not Found</h1>
+              <h1 className='text-white text-5xl font-bold font text-center mt-10'>User Not Found</h1>
           }
         </Layout>
     )
@@ -34,83 +52,27 @@ const User = (props: Props) => {
 export default User;
 
 export const getServerSideProps = async ({ req, query }) => { 
+
+  const username = query.username;
+
   try{
-    const username = query.username;
     const session = await getSession({ req })
 
-    var user = await prisma.user.findUnique({
-      where: {
-        username: username,
-      },
-      include: {
-        _count: {
-          select: {
-            posts: true
-          }
-        }
-      }
-    })
-    console.log('here is the user', user)
+    var user = await getUserProfile(username);
 
     user = JSON.parse(JSON.stringify(user))
-    console.log('here is the user again', user)
-    var posts = null
-    if(user){
-      posts = await prisma.post.findMany({
-        include: {
-          author: {
-            select: {
-              name: true,
-              image: true,
-              profileImage: true,
-            }
-          },
-          game:{
-            select:{
-              id: true,
-              name: true,
-              logoImage: true
-            }
-          },
-          likedBy:{
-            select: {
-              name: true
-            }
-          },
-          savedBy:{
-            select: {
-              name: true
-            }
-          },
-          _count: {
-            select:{
-              likedBy: true,
-              comments: true
-            }
-          }
-        },
-        where:{
-          authorId: user.id
-        },
-        orderBy: {
-          createdAt: 'desc'
-        }
-      });
-    }
-    var games = await prisma.game.findMany({
-      select: {
-        id: true,
-        name: true,
-        logoImage: true
-      },
-      orderBy:{
-        id: 'asc'
-      }
-    })
+    let postsResult = null
 
+    if(user){
+      postsResult = await getAllPostsFromUser(username)
+    }
+
+    var games = await getGames();
+    
     games = JSON.parse(JSON.stringify(games))
     
-    posts = JSON.parse(JSON.stringify(posts))
+    const posts = JSON.parse(JSON.stringify(postsResult?.posts))
+    console.log(posts)
 
     return {
       props: {

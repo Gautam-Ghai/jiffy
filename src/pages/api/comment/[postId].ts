@@ -1,7 +1,12 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import nc from 'next-connect';
-import { prisma } from "../../../../lib/prisma";
 import { IncomingForm } from 'formidable';
+
+//Utils
+import { prisma } from "../../../../lib/prisma";
+
+//Queries
+import { getAllComments } from "@/queries/Comment";
 
 const apiRoute = nc<NextApiRequest, NextApiResponse>({
 
@@ -20,30 +25,9 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
     const { postId } = req.query;
     const id = parseInt(postId);
 
-    const result = await prisma.post.findUnique({
-        select:{
-            comments:{
-                select: {
-                    content: true,
-                    createdAt: true,
-                    authorId: true,
-                    author:{
-                        select:{
-                            name: true,
-                            image: true,
-                            profileImage: true,
-                        }
-                    }
-                }
-            }
-        },
-        where:{
-            id: id
-        }
-    })
+    const result = await getAllComments(id);
 
-    const comments = result?.comments
-    const data  = JSON.stringify(comments)
+    const data  = JSON.stringify(result)
 
     if(result) res.send({data: data})
     else res.send({data: null})
@@ -69,7 +53,7 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
 
     const user = {
         connect: {
-        name: data?.fields?.name
+            username: data?.fields?.name
         }
     }
 

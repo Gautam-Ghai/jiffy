@@ -37,7 +37,7 @@ const options = [
 ]
 
 const Main = (props: Props) => {
-    const [ option, setOption ] = useState(0)
+    const [ option, setOption ] = useState(null)
     const [ posts, setPosts ] = useState(props.posts)
 
     useEffect(() =>{
@@ -89,7 +89,6 @@ const Main = (props: Props) => {
                         .then(result =>{
                             const savedPosts = JSON.parse(result.data)
                             setPosts(savedPosts.savedPosts)
-                            console.log('saved posts',savedPosts.savedPosts)
                         });
                         break;
                         
@@ -112,7 +111,7 @@ const Main = (props: Props) => {
     return (
         <div className="">
             {props.session && props.showMenu &&
-                <div className="bg-card-2 h-12 rounded-lg">
+                <div className="bg-bgBlue-200 h-12 rounded-lg">
                     <div className="flex flex-row space-x-6 md:space-x-3 lg:space-x-8 items-center px-2 pt-3 text-sm">
                         {options.map((data, key) => {
                             const active = key === option ? true : false

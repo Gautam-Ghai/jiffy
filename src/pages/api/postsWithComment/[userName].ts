@@ -1,6 +1,7 @@
-import { Post } from "@/utils/types/post";
 import { NextApiRequest, NextApiResponse } from "next";
 import nc from 'next-connect';
+
+//utils
 import { prisma } from "../../../../lib/prisma";
 
 const apiRoute = nc<NextApiRequest, NextApiResponse>({
@@ -20,7 +21,7 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
 
   const { username } = req.query;
 
-  const user = await prisma.user.findUnique({
+  const user = await prisma.userProfile.findUnique({
       select:{
           id: true
       },
@@ -40,9 +41,13 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
             createdAt: true,
             author: {
                 select:{
-                    name: true,
-                    image: true,
+                    username: true,
                     profileImage: true,
+                    user:{
+                        select:{
+                            image: true
+                        }
+                    }
                 }
             },
             postId: true,
@@ -59,9 +64,13 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
                     authorId: true,
                     author: {
                         select: {
-                        name: true,
-                        image: true,
+                        username: true,
                         profileImage: true,
+                        user:{
+                            select:{
+                                image: true
+                            }
+                        }
                         }
                     },
                     game:{
@@ -73,12 +82,12 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
                     },
                     likedBy:{
                         select: {
-                        name: true
+                        username: true
                         }
                     },
                     savedBy:{
                         select: {
-                        name: true
+                        username: true
                         }
                     },
                     _count: {
@@ -110,13 +119,15 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
                 gameId: 0,
                 authorId: 0,
                 author:{
-                    name: '',
-                    image: '',
-                    profileImage: ''
+                    username: '',
+                    profileImage: '',
+                    user:{
+                        image: ''
+                    }
                 },
                 game: {
                     name: '',
-                    image: ''
+                    logoImage: ''
                 },
                 likedBy: [],
                 savedBy: [],
@@ -129,9 +140,11 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
                     authorId: 0,
                     createdAt: '',
                     author: {
-                        name: '',
-                        image: '',
+                        username: '',
                         profileImage: '',
+                        user:{
+                            image: ''
+                        }
                     },
                     postId: 0
                 }
@@ -146,11 +159,11 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
             demoObj.publicId = post.post.publicId,
             demoObj.gameId = post.post.gameId,
             demoObj.authorId = post.post.authorId,
-            demoObj.author.name = post.post.author.name,
-            demoObj.author.image = post.post.author.image,
+            demoObj.author.username = post.post.author.username,
+            demoObj.author.user.image = post.post.author.user.image,
             demoObj.author.profileImage = post.post.author.profileImage,
             demoObj.game.name = post.post.game.name,
-            demoObj.game.image = post.post.game.image,
+            demoObj.game.logoImage = post.post.game.logoImage,
             demoObj.likedBy = post.post.likedBy,
             demoObj.savedBy = post.post.savedBy,
             demoObj._count.likedBy = post.post._count.likedBy,
@@ -158,8 +171,8 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
             demoObj.comment.content = post.content,
             demoObj.comment.authorId = post.authorId,
             demoObj.comment.postId = post.postId,
-            demoObj.comment.author.name = post.author.name,
-            demoObj.comment.author.image = post.author.image,
+            demoObj.comment.author.username = post.author.username,
+            demoObj.comment.author.user.image = post.author.user.image,
             demoObj.comment.author.profileImage = post.author.profileImage,
             demoObj.comment.createdAt = post.createdAt
 

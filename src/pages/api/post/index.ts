@@ -4,6 +4,7 @@ import { IncomingForm } from 'formidable';
 import { v4 as uuid } from "uuid";
 import { NextApiRequest, NextApiResponse } from "next";
 import nc from 'next-connect';
+import { getUserProfile } from "@/queries/User";
 
 const fileName = uuid()
 
@@ -29,7 +30,7 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
 .post(async (req, res) => {
 
   const data = await new Promise((resolve, reject) => {
-    const form = new IncomingForm();
+    const form = new IncomingForm({maxFileSize: 15728640});
 
     form.parse(req, (err, fields, files) => {
       if (err) return reject(err);
@@ -42,7 +43,7 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
   
   const author = {
     connect: {
-      name: data?.fields?.name
+      username: data?.fields?.name
     }
   }
 
@@ -52,11 +53,7 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
     }
   }
 
-  const user = await prisma.user.findUnique({
-    where:{
-      name: data?.fields?.name
-    }
-  })
+  const user = await getUserProfile(data?.fields?.name);
 
   if(user){
       

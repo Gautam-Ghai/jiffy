@@ -35,8 +35,10 @@ const options = {
                 ...session,
                 user: {
                     id: user.id,
-                    name: userProfile.username,
-                    email: user.email
+                    name: userProfile?.username,
+                    email: user.email,
+                    image: user.image,
+                    profileImage: userProfile?.profileImage
                 }
             }
             console.log(session)

@@ -21,3 +21,31 @@ export const getUserProfile = async(username: string) => {
 
     return result
 }
+
+export const getRecomendedUsers = async(username?: string) => {
+  const result = await prisma.userProfile.findMany({
+    select:{
+      id: true,
+      userId: true,
+      createdAt: true,
+      profileImage: true,
+      username: true,
+      user: {
+        select:{
+          image: true,
+        }
+      }
+    },
+    take: 6,
+    orderBy:{
+      createdAt: 'desc'
+    },
+    where:{
+      NOT:{
+        username: username || undefined
+      }
+    }
+  })
+
+  return result;
+}

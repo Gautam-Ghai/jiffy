@@ -10,16 +10,15 @@ import { User } from '../../utils/types/user'
 import { Session } from '@/utils/types/session'
 interface Props {
     user: User,
-    session?: Session,
-    page?: boolean
+    session?: Session
 }
 
 const Profile = (props: Props) => {
     return (
-        <div className={`bg-card text-white rounded-md drop-shadow-lg h-auto pb-6 ${!props.page && 'hidden lg:block'}`}>
+        <div className={`bg-cardBlue-100 text-white rounded-md drop-shadow-lg h-auto pb-6 w-full md:w-96`}>
             <div className="w-full relative">
-                <Image src={`${props.user.bannerImage || "/assets/default_banner_image.png"}`} alt='banner' height={props.page ? '256' : '126'} width={props.page ? '768' : '380'} className="rounded-t-md"/> 
-                <div className={`absolute left-4 ${props.page ? '-bottom-12' : 'top-20'} rounded-full border-4 border-solid border-borderBlue bg-btnBlue h-20 w-20`}>
+                <Image src={`${props.user.bannerImage || "/assets/default_banner_image.png"}`} alt='banner' height={'126'} width={'380'} className="rounded-t-md" layout='responsive'/> 
+                <div className={`absolute left-4 top-3/4 rounded-full border-4 border-solid border-borderBlue bg-btnBlue h-20 w-20`}>
                     <Image src={`${props.user.profileImage || props.user.user.image || "/assets/user.png"}`} alt="user" height="80" width="80" className='rounded-full'/>
                 </div>
             </div>
@@ -34,7 +33,7 @@ const Profile = (props: Props) => {
                     </div>
                 }
             </div>
-            <div className="bg-card-2 flex flex-row justify-evenly h-16 pt-2.5 my-4 mt-6">
+            <div className="bg-bgBlue-200 flex flex-row justify-evenly h-16 pt-2.5 my-4 mt-6">
                 <div className="flex flex-col items-center">
                     <p>{props.user._count?.posts ? props.user._count.posts : 0}</p>
                     <p className='text-xs text-gray-500'>Clips</p>

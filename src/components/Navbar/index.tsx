@@ -14,6 +14,7 @@ import DropdownMenu from "../DropdownMenu"
 import {useDropzone} from 'react-dropzone';
 import { FaLess, FaTrashAlt } from "react-icons/fa"
 import { useRouter } from 'next/router'
+import AuthModal from '../AuthModal'
 
 interface Props {
 }
@@ -68,13 +69,13 @@ const Navbar = (props: Props) => {
         if(session && isEditOpen){
             console.log('clicked')
             const data = new FormData()
-            if(files.length > 0){
+            if(files && files.length > 0){
                 data.append('banner', files[0]);
             }
-            if(website.length > 0){
+            if(website && website.length > 0){
                 data.append('website', website);
             }
-            if(about.length > 0) {  
+            if(about && about.length > 0) {  
                 data.append('about', about)
             }
             const requestOptions = {
@@ -96,6 +97,10 @@ const Navbar = (props: Props) => {
 
     const postOptions =[
         {
+            name: 'View Profile',
+            function: () => router.push(`/user/${session?.user?.name}`)
+        },
+        {
             name: 'Edit Profile',
             function: () => setIsEditOpen(true)
         },
@@ -106,7 +111,7 @@ const Navbar = (props: Props) => {
     ]
 
     return (
-        <header className="bg-card h-12 w-full relative">
+        <header className="bg-cardBlue-100 h-12 w-full relative">
             <div className="flex flex-row justify-between pt-1.5 md:justify-evenly mx-4 md:mx-0">
                 <div className='-mt-2'>
                     <Image src="/assets/logo_2.png" height={60} width={120} />
@@ -114,22 +119,22 @@ const Navbar = (props: Props) => {
                 <div className="hidden md:block">
                     <div className="flex flex-row space-x-6 items-center">
                         <Link href="/" passHref> 
-                            <div className="flex flex-row space-x-2 mt-1 h-10 cursor-pointer border-transparent border-b-4 p-0  text-gray-500 hover:border-blue-600 hover:text-white">
+                            <div className="flex flex-row space-x-2 mt-1 h-10 cursor-pointer border-transparent border-b-4 p-0  text-gray-500 hover:border-btnBlue hover:text-white">
                                 <IoGameControllerOutline className="h-6 w-6" />
                                 <p className='hidden lg:block'>Home</p>
                             </div>
                         </Link>
-                        <div className="flex flex-row space-x-1 mt-1 h-10 cursor-pointer border-transparent border-b-4 p-0  text-gray-500 hover:border-blue-600 hover:text-white">
+                        <div className="flex flex-row space-x-1 mt-1 h-10 cursor-pointer border-transparent border-b-4 p-0  text-gray-500 hover:border-btnBlue hover:text-white">
                             <AiOutlineCompass className="h-6 w-6" />
                             <p className='hidden lg:block'>Explore</p>
                         </div>
-                        <div className="flex flex-row space-x-1 mt-1 h-10 cursor-pointer border-transparent border-b-4 p-0  text-gray-500 hover:border-blue-600 hover:text-white">
+                        <div className="flex flex-row space-x-1 mt-1 h-10 cursor-pointer border-transparent border-b-4 p-0  text-gray-500 hover:border-btnBlue hover:text-white">
                             <HiOutlineUserGroup className="h-6 w-6" />
                             <p className='hidden lg:block'>Communities</p>
                         </div>
                         {session && 
                             <Link href="/upload" passHref> 
-                                <div className="flex flex-row space-x-1 mt-1 h-10 cursor-pointer border-transparent border-b-4 p-0  text-gray-500 hover:border-blue-600 hover:text-white">
+                                <div className="flex flex-row space-x-1 mt-1 h-10 cursor-pointer border-transparent border-b-4 p-0  text-gray-500 hover:border-btnBlue hover:text-white">
                                     <MdOutlineVideoLibrary className="h-6 w-6" />
                                     <p className='hidden lg:block'>Upload Clips</p>
                                 </div>
@@ -147,33 +152,31 @@ const Navbar = (props: Props) => {
                         <div className='flex flex-row mt-1 space-x-4'>
                             <IoNotificationsOutline className="h-6 w-6 text-gray-500 hover:text-white cursor-pointer"/>
                             <DropdownMenu options={postOptions}>
-                                <div className="h-7 w-7 cursor-pointer">
-                                    <Image src="/assets/avatar.png" alt="image" height="100" width="100" className="rounded-full" layout='responsive'/>
+                                <div className="h-8 w-8 cursor-pointer bg-btnBlue rounded-full border-borderBlue border-2 -mt-0.5">
+                                    <Image src={session.user?.profileImage || session.user?.image || "/assets/avatar.png" }alt="image" height="28" width="28" className="rounded-full" layout='responsive'/>
                                 </div>
                             </DropdownMenu>
                         </div>  
                     ) : (
-                        <div className='flex flex-row mt-1 space-x-1 lg:space-x-4'>
+                        <div className='flex flex-row space-x-1 lg:space-x-4 mt-0.5'>
                             <Button onClick={() => setIsOpen(true)}>
                                 SignIn
                             </Button>
                         </div>
                     )}
             </div>
-            <Modal isOpen={isOpen} setIsOpen={setIsOpen} title='SignIn' titleClassName="text-center">
-                <button onClick={() => signIn('discord')} className='w-full h-10 rounded-2xl py-1.5 px-2.5 text-lg text-white font-bold bg-discordBlue'>
-                    Discord
-                </button>
-            </Modal>
+            
+            <AuthModal isOpen={isOpen} setIsOpen={setIsOpen}/>
+
             <Modal 
                 isOpen={isEditOpen} 
                 setIsOpen={setIsEditOpen} 
                 title='Edit Profile' 
                 titleClassName="text-center" 
                 footer={
-                    <button onClick={handleEditProfile} className="rounded-2xl w-auto text-sm text-gray-500 font-semibold border-2 border-solid border-gray-500 py-1 px-2.5 mr-4" type="button">
+                    <Button onClick={handleEditProfile} className="mr-4">
                         Submit
-                    </button>
+                    </Button>
                 }
             >
                 {userDetails && 
@@ -210,7 +213,7 @@ const Navbar = (props: Props) => {
                         }
                         <div className='flex mt-2'>
                             <div className='rounded-full border-4 border-solid border-borderBlue bg-btnBlue h-16 w-16'>
-                                <Image src={`${userDetails.profileImage || userDetails.image || "/assets/user.png"}`} alt="user" height="64" width="64" />
+                                <Image src={`${userDetails.profileImage || userDetails.image || "/assets/user.png"}`} alt="user" height="64" width="64"  className='rounded-full'/>
                             </div>
                             <div className="flex flex-col ml-4">
                                 <p className="text-gray-500 text-lg font-semibold text-left">{userDetails.name}</p>

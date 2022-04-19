@@ -19,20 +19,18 @@ body
     background-color: $primary-bg-color
     @include scrollbars(10px, $card-color)
 
-.bg-card
-    background-color: $card-color
-
 .input-color
     background-color: $primary-bg-color
 
 .discord
     background-color: #5865F2 !important
 
-.bg-card-2
-    background-color: $card-secondary-color
-
 .button
-    background: linear-gradient($button-color-1, $button-color-2)
+    background: linear-gradient(180deg, $button-color-1 35%, $button-color-2 100%)
+
+    &:hover
+        box-shadow: 0px 8px 15px rgba(0, 139, 249, 0.2)
+        transform: translateY(-4px)
 
 .max-w-768
     max-width: 768px

@@ -46,8 +46,8 @@ export default function Example(props: Props) {
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
-            <div className="inline-block align-bottom bg-card rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl w-full">
-              <div className="bg-card px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div className="inline-block align-bottom bg-cardBlue-100 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl w-full">
+              <div className="bg-cardBlue-100 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="">
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                     <Dialog.Title as="h3" className={`text-lg leading-6 font-medium text-white mb-4 ${props.titleClassName}`}>
@@ -59,11 +59,11 @@ export default function Example(props: Props) {
                   </div>
                 </div>
               </div>
-              <div className="bg-card-2 px-8 py-3 flex justify-center">
+              <div className="bg-bgBlue-200 px-8 py-3 flex justify-center">
                 {props.footer}
                 <button
                   type="button"
-                  className="rounded-2xl w-auto text-sm text-gray-500 font-semibold border-2 border-solid border-gray-500 py-1 px-2.5"
+                  className="rounded-md w-auto text-md text-gray-500 font-semibold tracking-wide border-2 border-solid border-gray-500 py-1 px-2.5 hover:text-white hover:border-white hover:-translate-y-1"
                   onClick={() => props.setIsOpen(false)}
                   ref={cancelButtonRef}
                 >

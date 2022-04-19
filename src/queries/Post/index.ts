@@ -51,6 +51,11 @@ export const getSpecificPost = async(postId: number) => {
         include: {
             author: {
                 include: {
+                    user:{
+                      select:{
+                        image: true
+                      }
+                    },
                     _count: {
                         select: {
                             posts: true
@@ -88,4 +93,181 @@ export const getSpecificPost = async(postId: number) => {
     });
 
     return result
+}
+
+export const getAllPostsFromUser = async(username: string) => {
+    const result = await prisma.userProfile.findUnique({
+      select:{
+        posts:{
+          include: {
+            author: {
+              select: {
+                username: true,
+                profileImage: true,
+                user: {
+                  select: {
+                    image: true
+                  }
+                }
+              }
+            },
+            game:{
+              select:{
+                id: true,
+                name: true,
+                logoImage: true
+              }
+            },
+            likedBy:{
+              select: {
+                username: true
+              }
+            },
+            savedBy:{
+              select: {
+                username: true
+              }
+            },
+            _count: {
+              select:{
+                likedBy: true,
+                comments: true
+              }
+            }
+          },
+          orderBy: {
+            createdAt: 'desc'
+          }
+        },
+      },
+      where:{
+        username: username
+      },
+    });
+
+    return result;
+}
+
+export const getLikedPostsFromUser = async(username: string) => {
+  const result = await prisma.userProfile.findUnique({
+    select:{
+      likedPosts:{
+        select:{
+          id: true,
+          createdAt: true,
+          updatedAt: true,
+          title: true,
+          description: true,
+          url: true,
+          publicId: true,
+          gameId: true,
+          authorId: true,
+          author: {
+            select: {
+              username: true,
+              profileImage: true,
+              user:{
+                select:{
+                  image: true
+                }
+              }
+            }
+          },
+          game:{
+            select:{
+              id: true,
+              name: true,
+              logoImage: true
+            }
+          },
+          likedBy:{
+            select: {
+              username: true
+            }
+          },
+          savedBy:{
+            select: {
+              username: true
+            }
+          },
+          _count: {
+            select:{
+              likedBy: true,
+              comments: true
+            }
+          },
+        },
+        orderBy:{
+          createdAt: 'desc'
+        }
+      }
+    },
+    where:{
+      username: username
+    }
+  })
+
+  return result;
+}
+
+export const getSavedPostsFromUser = async(username: string) => {
+  const result = await prisma.userProfile.findUnique({
+    select:{
+      savedPosts:{
+        select:{
+          id: true,
+          createdAt: true,
+          updatedAt: true,
+          title: true,
+          description: true,
+          url: true,
+          publicId: true,
+          gameId: true,
+          authorId: true,
+          author: {
+            select: {
+              username: true,
+              profileImage: true,
+              user:{
+                select:{
+                  image: true
+                }
+              }
+            }
+          },
+          game:{
+            select:{
+              id: true,
+              name: true,
+              logoImage: true
+            }
+          },
+          likedBy:{
+            select: {
+              username: true
+            }
+          },
+          savedBy:{
+            select: {
+              username: true
+            }
+          },
+          _count: {
+            select:{
+              likedBy: true,
+              comments: true
+            }
+          },
+        },
+        orderBy:{
+          createdAt: 'desc'
+        }
+      }
+    },
+    where:{
+      username: username
+    }
+  })
+
+  return result;
 }

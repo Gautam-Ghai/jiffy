@@ -1,9 +1,9 @@
 import { Post } from "./post"
 
 export interface Game {
-    id?: number,
-    name?: string,
-    logoImage?: string
+    id: number,
+    name: string,
+    logoImage: string
 }
 
 export interface GameWithPosts {

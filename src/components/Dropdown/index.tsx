@@ -24,7 +24,7 @@ export default function Dropdown(props: Props) {
         <div className='flex flex-row space-x-2 mt-2'>
           <Listbox.Label className="pt-2 block text-sm font-medium text-gray-500">Game</Listbox.Label>
           <div className="relative">
-            <Listbox.Button className="relative w-full bg-card-2 border-none rounded-md shadow-sm px-3 py-2 text-left cursor-pointer  sm:text-sm bg-bgBlue-200">
+            <Listbox.Button className="relative w-full border-none rounded-md shadow-sm px-3 py-2 text-left cursor-pointer  sm:text-sm bg-bgBlue-200">
               <span className="flex items-center">
                 <img src={props.selected.logoImage} alt="" className="flex-shrink-0 h-6 w-6 rounded-full" />
                 <span className="ml-3 block truncate text-gray-500">{props.selected.name}</span>
@@ -41,7 +41,7 @@ export default function Dropdown(props: Props) {
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <Listbox.Options className="absolute z-10 mt-1 w-full bg-card-2 shadow-lg max-h-56 rounded-md py-1 text-base overflow-auto sm:text-sm">
+              <Listbox.Options className="absolute z-10 mt-1 w-full bg-bgBlue-200 shadow-lg max-h-56 rounded-md py-1 text-base overflow-auto sm:text-sm">
                 {props.data.map((data) => (
                   <Listbox.Option
                     key={data.id}

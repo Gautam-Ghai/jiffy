@@ -1,7 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "../../../../lib/prisma";
 import nc from 'next-connect';
 import cloudinary from 'cloudinary';
+
+//Utils
+import { prisma } from "../../../../lib/prisma";
 
 cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_NAME,

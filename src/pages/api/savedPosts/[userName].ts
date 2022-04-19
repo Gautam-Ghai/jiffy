@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import nc from 'next-connect';
-import { prisma } from "../../../../lib/prisma";
+
+//Queries
+import { getSavedPostsFromUser } from "@/queries/Post";
 
 const apiRoute = nc<NextApiRequest, NextApiResponse>({
 
@@ -19,59 +21,7 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
 
   const { username } = req.query;
 
-  const posts = await prisma.user.findUnique({
-    select:{
-      savedPosts:{
-        select:{
-          id: true,
-          createdAt: true,
-          updatedAt: true,
-          title: true,
-          description: true,
-          url: true,
-          publicId: true,
-          gameId: true,
-          authorId: true,
-          author: {
-            select: {
-              name: true,
-              image: true,
-              profileImage: true,
-            }
-          },
-          game:{
-            select:{
-              id: true,
-              name: true,
-              logoImage: true
-            }
-          },
-          likedBy:{
-            select: {
-              name: true
-            }
-          },
-          savedBy:{
-            select: {
-              name: true
-            }
-          },
-          _count: {
-            select:{
-              likedBy: true,
-              comments: true
-            }
-          },
-        },
-        orderBy:{
-          createdAt: 'desc'
-        }
-      }
-    },
-    where:{
-      username: username
-    }
-  })
+  const posts = await getSavedPostsFromUser(username);
 
   const result= JSON.stringify(posts)
 

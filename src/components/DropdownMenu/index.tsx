@@ -29,7 +29,7 @@ export default function DropdownMenu(props: Props) {
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="absolute right-0 w-56 mt-2 origin-top-right bg-card divide-y divide-gray-800 rounded-md shadow-lg z-50">
+          <Menu.Items className="absolute right-0 w-56 mt-2 origin-top-right bg-cardBlue-100 divide-y divide-gray-800 rounded-md shadow-lg z-50">
               {props.options.map((opt, key) => 
                 <Menu.Item 
                   key={key}

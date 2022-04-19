@@ -18,8 +18,8 @@ interface Props {
 const Comment = (props: Props) => {
     return (
         <div className='mt-2 flex flex-row items-start text-white space-x-2 mx-2 h-auto'>
-            <div className="button h-10 w-10 border-2 border-gray-800 rounded-full min-w-max">    
-                <Image src={props.profileImage || '/assets/user.png'} height="40" width="40" className="rounded-full" alt="user" />
+            <div className="bg-btnBlue h-10 w-10 border-2 border-gray-800 rounded-full min-w-max">    
+                <Image src={props.profileImage || '/assets/user.png'} height="36" width="36" className="rounded-full" alt="user" />
             </div>
             <span className='flex flex-col min-w-max'>
                 <Link href={`/user/${props.username}`}>

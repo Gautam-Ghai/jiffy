@@ -12,7 +12,7 @@ const Footer = () => {
     const { data: session, status } = useSession()
 
     return (
-        <div className='bg-card fixed navbar bottom-0 h-12 w-full pt-2 z-50'>
+        <div className='bg-cardBlue-100 fixed navbar bottom-0 h-12 w-full pt-2 z-50'>
             <div className="flex flex-row justify-around items-center">
                 <Link href='/'>
                     <div className="flex flex-row space-x-2 mt-1 cursor-pointer  text-gray-500 hover:text-white">

@@ -4,6 +4,7 @@ import { prisma } from "../../../../lib/prisma";
 import cloudinary from 'cloudinary';
 import { IncomingForm } from 'formidable';
 import { v4 as uuid } from "uuid";
+import { getUserProfile } from "@/queries/User";
 
 const fileName = uuid()
 
@@ -24,11 +25,7 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
 
   const { username } = req.query;
 
-  let userDetails = await prisma.user.findUnique({
-      where:{
-          name: username
-      }
-  })
+  let userDetails = await getUserProfile(username);
 
   if(userDetails){
     userDetails = JSON.parse(JSON.stringify(userDetails))
@@ -48,11 +45,8 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
 
   const { username } = req.query;
 
-  const user = await prisma.user.findUnique({
-    where:{
-      name: username
-    }
-  })
+  const user = await getUserProfile(username);
+
   let resultImage = null
   let resultWebsite = null
   let resultAbout = null
@@ -72,7 +66,7 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
 
       
         if(response){
-          resultImage = await prisma.user.update({
+          resultImage = await prisma.userProfile.update({
             data: {
               bannerImage: response.url,
               bannerImageId: response.public_id
@@ -85,7 +79,7 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
       }
 
     if(data?.fields?.about && data?.fields?.about.length >0){
-      resultAbout = await prisma.user.update({
+      resultAbout = await prisma.userProfile.update({
         data: {
           description: data?.fields?.about
         },
@@ -97,7 +91,7 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
 
     if(data?.fields?.website && data?.fields?.website.length >0){
       console.log("website", data?.fields?.website)
-      resultWebsite = await prisma.user.update({
+      resultWebsite = await prisma.userProfile.update({
         data: {
           website: data?.fields?.website
         },

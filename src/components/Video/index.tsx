@@ -49,11 +49,11 @@ const Video = (props: Props) => {
       </div> 
       <div className="sound">
         {isMuted ? 
-          <div className="border-none rounded-full h-6 w-6 bg-card flex justify-center items-center">
+          <div className="border-none rounded-full h-6 w-6 bg-cardBlue-100 flex justify-center items-center">
             <GiSpeakerOff onClick={() => setIsMuted(false)} className="h-5 w-5 text-white"/> 
           </div>
         : 
-          <div className="border-none rounded-full h-6 w-6 bg-card flex justify-center items-center"> 
+          <div className="border-none rounded-full h-6 w-6 bg-cardBlue-100 flex justify-center items-center"> 
             <GiSpeaker onClick={() => setIsMuted(true)} className="h-5  w-5 text-white"/>
           </div>
         }

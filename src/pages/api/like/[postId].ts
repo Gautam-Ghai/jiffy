@@ -1,5 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import nc from 'next-connect';
+
+//Utils
 import { prisma } from "../../../../lib/prisma";
 
 const apiRoute = nc<NextApiRequest, NextApiResponse>({
@@ -23,7 +25,7 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
   console.log(req.body.name)
   const user = {
     connect: {
-      name: req.body.name
+      username: req.body.name
     }
   }
 
@@ -48,7 +50,7 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
 
   const user = {
     disconnect: {
-      name: req.body.name
+      username: req.body.name
     }
   }
 
