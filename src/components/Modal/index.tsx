@@ -13,7 +13,7 @@ interface Props {
     footer?: any
 }
 
-export default function Example(props: Props) {
+export default function Modal(props: Props) {
 
   const cancelButtonRef = useRef(null)
 
@@ -63,7 +63,7 @@ export default function Example(props: Props) {
                 {props.footer}
                 <button
                   type="button"
-                  className="rounded-md w-auto text-md text-gray-500 font-semibold tracking-wide border-2 border-solid border-gray-500 py-1 px-2.5 hover:text-white hover:border-white hover:-translate-y-1"
+                  className="rounded-full w-auto text-md text-gray-500 font-semibold tracking-wide border-2 border-solid border-gray-500 py-1 px-4 hover:text-white hover:border-white hover:-translate-y-0.5"
                   onClick={() => props.setIsOpen(false)}
                   ref={cancelButtonRef}
                 >

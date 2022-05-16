@@ -15,7 +15,7 @@ import { User } from '@/utils/types/user';
 
 //Queries
 import { getAllPosts } from "@/queries/Post/index"
-import { getRecomendedUsers, getUserProfile  } from "@/queries/User/index"
+import { getRecomendedUsers  } from "@/queries/User/index"
 import { getGames  } from "@/queries/Game/index"
 interface Props {
     posts: Post[],
@@ -26,9 +26,8 @@ interface Props {
 
 const Home = (props: Props) => {
   return (
-    <Layout>
-      <div className='container flex flex-row lg:space-x-8 xl:space-x-16 mt-8'>
-          <Sidebar />
+    <Layout showInfo>
+      <div className='flex flex-row lg:space-x-8 xl:space-x-16'>
         <Main posts={props.posts} session={props.session} showMenu games={props.games} />
         <div className='hidden xl:block'>
           {props.recomendedUsers && 
@@ -56,7 +55,6 @@ export const getServerSideProps = async ({ req }) => {
     games = JSON.parse(JSON.stringify(games))
 
     let recomendedUsers: any
-    let user: any
 
     if(session){
       const userProfile: any = session.user

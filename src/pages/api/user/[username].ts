@@ -4,7 +4,7 @@ import { prisma } from "../../../../lib/prisma";
 import cloudinary from 'cloudinary';
 import { IncomingForm } from 'formidable';
 import { v4 as uuid } from "uuid";
-import { getUserProfile } from "@/queries/User";
+import { getUserId, getUserProfile } from "@/queries/User";
 
 const fileName = uuid()
 
@@ -45,7 +45,7 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
 
   const { username } = req.query;
 
-  const user = await getUserProfile(username);
+  const user = await getUserId(username);
 
   let resultImage = null
   let resultWebsite = null

@@ -5,6 +5,8 @@ import Card from '../Card'
 
 import { Post } from '../../utils/types/post'
 import { Session } from '@/utils/types/session'
+import ConfirmModal from '../ConfirmModal'
+import Loader from '../Loader'
 
 interface Props {
     posts: Post[],
@@ -20,7 +22,7 @@ interface Props {
 const options = [
     {
         id: 0,
-        name: 'Home'
+        name: 'Latest'
     },
     {
         id: 1,
@@ -37,6 +39,8 @@ const options = [
 ]
 
 const Main = (props: Props) => {
+    
+    const [ loading, setLoading ] = useState(false)
     const [ option, setOption ] = useState(null)
     const [ posts, setPosts ] = useState(props.posts)
 
@@ -97,14 +101,20 @@ const Main = (props: Props) => {
     }, [option])
 
     const handleDelete = async(id: number) => {
+        setLoading(true)
         const post = posts.find(data=> data.id === id)
         if(post?.author?.username === props.session?.user.name){ 
             fetch(`/api/post/${id}`, {method: 'DELETE'})
             .then(res =>{
                 const newPosts = posts.filter(data => data.id != id)
                 setPosts(newPosts)
+                setLoading(false)
             }
             )
+            .catch(err =>{
+                console.log(err)
+                setLoading(false)
+            })
         }
     }
 
@@ -145,6 +155,11 @@ const Main = (props: Props) => {
                     )
                 })}
             </div>
+            
+            <Loader 
+                active={loading}
+                text='deleting...'
+            />
         </div>
     )
 }

@@ -11,11 +11,11 @@ module.exports = {
           200: "#13192a",
         },
         cardBlue: {
-          100: "#171d33",
+          100: "#151b2f",
           200: '#12182a'
         },
         borderBlue: '#113964',
-        btnBlue: "#008bf9",
+        btnBlue: "#008fff",
         discordBlue: "#5865f2",
         twitchBlue: "#6441a5"
       }

@@ -21,18 +21,19 @@ interface Props {
 
 const User = (props: Props) => {
   const router = useRouter()
+  const { username } = router.query
 
     return (
-        <Layout>
+        <Layout showNavbarMenu>
           {props.user ? 
-            <div className={`container flex md:space-x-8 xl:space-x-16 mt-8 ${props.posts.length > 0 ? 'flex-col md:flex-row' : 'flex-col'} `}>
+            <div className={`flex md:space-x-8 xl:space-x-16 ${props.posts.length > 0 ? 'flex-col md:flex-row' : 'flex-col justify-center items-center'} `}>
               <div className='w-auto flex justify-center'>
                 <Profile user={props.user} /> 
               </div>
                 {props.posts.length > 0 ?
                   <Main posts={props.posts} session={props.session} games={props.games} />
                   :
-                  props.session ? (
+                  props.session.user.name === username ? (
                     <div className='flex flex-col items-center justify-center'>
                       <h1 className='text-center text-white font-semibold text-xl my-4'>No clips to show yet...</h1>
                       <Button onClick={() => router.push("/upload")}>Add a New Clip</Button>

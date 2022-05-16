@@ -20,12 +20,12 @@ interface Props{
 
 const RecomendedUsers = (props: Props) => {
   return (
-    <div className='bg-cardBlue-100 rounded-md drop-shadow-lg h-auto w-72 lg:w-80 xl:w-96 pb-6 hidden xl:block'>
-        <h1 className='text-gray-500 font-bold text-2xl px-4 pt-4'>New Users</h1>
+    <div className='bg-cardBlue-100 rounded-md drop-shadow-lg h-auto w-72 p-4 hidden xl:block'>
+        <h1 className='text-gray-500 font-bold text-2xl'>New Users</h1>
         {props.recomendedUsers && 
             props.recomendedUsers.map((recomendedUser, index) => {
                 return(
-                    <div className='pt-4 flex flex-row justify-between text-white mx-4 h-auto'>
+                    <div className='pt-4 flex flex-row justify-between text-white h-auto' key={`recomendedUser-${index}`}>
                         <div className="flex">
                             <div className="bg-btnBlue h-10 w-10 border-2 border-gray-800 rounded-full min-w-max">    
                                 <Image src={recomendedUser.profileImage || recomendedUser.user.image || '/assets/user.png'} height="36" width="36" className="rounded-full" alt="user" />

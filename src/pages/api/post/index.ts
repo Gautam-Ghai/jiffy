@@ -4,7 +4,7 @@ import { IncomingForm } from 'formidable';
 import { v4 as uuid } from "uuid";
 import { NextApiRequest, NextApiResponse } from "next";
 import nc from 'next-connect';
-import { getUserProfile } from "@/queries/User";
+import { getUserId } from "@/queries/User";
 
 const fileName = uuid()
 
@@ -53,7 +53,7 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
     }
   }
 
-  const user = await getUserProfile(data?.fields?.name);
+  const user = await getUserId(data?.fields?.name);
 
   if(user){
       
@@ -74,6 +74,7 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
         const result = await prisma.post.create({
           data: {
             title: data?.fields?.title,
+            description: data?.fields?.description || null,
             url: response.url,
             publicId: response.public_id,
             author: author,

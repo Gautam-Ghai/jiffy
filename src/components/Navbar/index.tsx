@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Button from "../Button"
-import Link from 'next/link'
 
 import { useSession, signIn, signOut } from "next-auth/react"
 
@@ -15,8 +14,10 @@ import {useDropzone} from 'react-dropzone';
 import { FaLess, FaTrashAlt } from "react-icons/fa"
 import { useRouter } from 'next/router'
 import AuthModal from '../AuthModal'
+import Menu from '../Menu'
 
 interface Props {
+    showNavbarMenu?: boolean
 }
 
 const Navbar = (props: Props) => {
@@ -111,37 +112,16 @@ const Navbar = (props: Props) => {
     ]
 
     return (
-        <header className="bg-cardBlue-100 h-12 w-full relative">
-            <div className="flex flex-row justify-between pt-1.5 md:justify-evenly mx-4 md:mx-0">
+        <header className="bg-cardBlue-100 h-12 w-full relative flex justify-center">
+            <div className="max-w-7xl w-full flex flex-row justify-between pt-1.5 md:justify-between mx-4 xl:mx-0">
                 <div className='-mt-2'>
                     <Image src="/assets/logo_2.png" height={60} width={120} />
                 </div>
-                <div className="hidden md:block">
-                    <div className="flex flex-row space-x-6 items-center">
-                        <Link href="/" passHref> 
-                            <div className="flex flex-row space-x-2 mt-1 h-10 cursor-pointer border-transparent border-b-4 p-0  text-gray-500 hover:border-btnBlue hover:text-white">
-                                <IoGameControllerOutline className="h-6 w-6" />
-                                <p className='hidden lg:block'>Home</p>
-                            </div>
-                        </Link>
-                        <div className="flex flex-row space-x-1 mt-1 h-10 cursor-pointer border-transparent border-b-4 p-0  text-gray-500 hover:border-btnBlue hover:text-white">
-                            <AiOutlineCompass className="h-6 w-6" />
-                            <p className='hidden lg:block'>Explore</p>
-                        </div>
-                        <div className="flex flex-row space-x-1 mt-1 h-10 cursor-pointer border-transparent border-b-4 p-0  text-gray-500 hover:border-btnBlue hover:text-white">
-                            <HiOutlineUserGroup className="h-6 w-6" />
-                            <p className='hidden lg:block'>Communities</p>
-                        </div>
-                        {session && 
-                            <Link href="/upload" passHref> 
-                                <div className="flex flex-row space-x-1 mt-1 h-10 cursor-pointer border-transparent border-b-4 p-0  text-gray-500 hover:border-btnBlue hover:text-white">
-                                    <MdOutlineVideoLibrary className="h-6 w-6" />
-                                    <p className='hidden lg:block'>Upload Clips</p>
-                                </div>
-                            </Link>
-                        }
+                {props.showNavbarMenu && 
+                    <div className='hidden sm:block'>
+                        <Menu showNavbarMenu={props.showNavbarMenu} />  
                     </div>
-                </div>
+                }
                 <div className="hidden md:block">
                     <form className="relative">    
                         <input placeholder='Search' className="input-color w-56 p-1.5 pl-10 border-none rounded-2xl caret-gray-500 text-gray-500 placeholder-gray-500" />
@@ -158,7 +138,7 @@ const Navbar = (props: Props) => {
                             </DropdownMenu>
                         </div>  
                     ) : (
-                        <div className='flex flex-row space-x-1 lg:space-x-4 mt-0.5'>
+                        <div className='flex flex-row space-x-1 lg:space-x-4'>
                             <Button onClick={() => setIsOpen(true)}>
                                 SignIn
                             </Button>

@@ -11,6 +11,9 @@ import Modal from "@/components/Modal"
 import Comment from "@/components/Comment"
 import CommentInput from '../CommentInput'
 import { Session } from '@/utils/types/session'
+import ConfirmModal from '../ConfirmModal'
+import ExpandText from '../ExpandText'
+import { useRouter } from 'next/router'
 
 var relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(relativeTime)
@@ -20,6 +23,7 @@ interface Props {
     session?: Session
     handleDelete?: (id: number) => void,
     option?: number,
+    disablePostClick?: boolean
     disableComment?: boolean,
     newCommentCount?: number,
     setParentComments?: any
@@ -27,15 +31,18 @@ interface Props {
 }
 
 const Card = (props: Props) => {
+    const router = useRouter()
     const [ isOpen, setIsOpen ] = useState(false)
     const [ isLiked, setIsLiked ] = useState(props.option === 1 ? true : props.post.likedBy?.some(user => user.username === props.session?.user.name))
     const [ likes, setLikes ] = useState(props.post._count?.likedBy || 0)
     const [ isSaved, setIsSaved ] = useState(props.option === 3 ? true : props.post.savedBy?.some(user => user.username === props.session?.user.name))
     const [ comments, setComments ] = useState(props.parentComments || null)
     const [ commentCount, setCommentCount ] = useState(props.newCommentCount || props.post._count?.comments || 0)
-    const [parentComment, setParentComment] = useState('')
-    const handleEdit = () => {
+    const [ parentComment, setParentComment ] = useState('')
+    const [ confirmDelete, setConfirmDelete ] = useState(false)
 
+    const handleEdit = () => {
+        router.push(`/upload?edit=${props.post.id}`)
     }
 
     const handleLike = async(id: number) => {
@@ -59,7 +66,7 @@ const Card = (props: Props) => {
 
     const handleDislike = async(id: number) => {
 
-        if(props.session){ 
+        if(props.session){
             fetch(`/api/like/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
@@ -152,18 +159,55 @@ const Card = (props: Props) => {
         },
         {
             name: 'Delete',
-            function: props.handleDelete
+            function: () => setConfirmDelete(true)
         },
     ]
+
+    const postBody =    <div className="my-2 mx-2 lg:mx-6 cursor-pointer h-auto">
+                            <h1 className='text-white font-semibold text-xl'>{props.post.title}</h1>
+                            <ExpandText maxHeight={25} className='text-gray-500'>{props.post.description}</ExpandText>
+                            <div className='flex flex-row justify-between text-sm py-2'>
+                                <div className="flex flex-row space-x-2 text-white items-center">
+                                    <AiOutlineLike className="text-btnBlue h-4 w-4"/>
+                                    <p>{likes}</p>
+                                </div>
+                                <div className="flex flex-row space-x-4 text-white items-center">
+                                    <div className="flex flex-row space-x-2 text-white items-center">
+                                        <p>{props.post.viewsCount || 0}</p>
+                                        <p>Views</p>
+                                    </div>
+                                    <div className="flex flex-row space-x-2 text-white items-center">
+                                        <p>{commentCount || 0}</p>
+                                        <p>Comments</p>
+                                    </div>
+                                    <div className="flex flex-row space-x-2 text-white items-center">
+                                        <p>{props.post.sharesCount || 0}</p>
+                                        <p>Shares</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
     return (
         <div className="py-4 drop-shadow-lg max-w-768">
             <div className="flex flex-row my-2 items-center relative">
                 <div className="bg-btnBlue h-10 w-10 border-2 border-borderBlue rounded-full">    
-                    <Image src={`${props.post.author?.profileImage || props.post.author?.user?.image || "/assets/user.png"}`} height="36" width="36" className="rounded-full" alt="user" />
+                    <Image 
+                        src={`${props.post.author?.profileImage || props.post.author?.user?.image || "/assets/user.png"}`} 
+                        height="36" 
+                        width="36" 
+                        className="rounded-full" 
+                        alt="user" 
+                    />
                 </div>
                 <div className="h-10 pl-1 pt-1 w-10 border-2 border-borderBlue rounded-full -ml-3 z-10 bg-bgBlue-200">    
-                    <Image src={`${props.post.game?.logoImage ? props.post.game.logoImage : "/assets/game.png"}`} height="28" width="28" className="rounded-full" alt="game" />
+                    <Image 
+                        src={`${props.post.game?.logoImage ? props.post.game.logoImage : "/assets/game.png"}`} 
+                        height="28" 
+                        width="28" 
+                        className="rounded-full" 
+                        alt="game" 
+                    />
                 </div>
                 <div className='flex flex-col text-white ml-4'>
                     <p className='text-sm cursor-pointer'>   
@@ -182,38 +226,29 @@ const Card = (props: Props) => {
                     <p className="text-gray-500 text-xs">{dayjs().to(dayjs(props.post.createdAt))}</p>
                 </div>
                 {props.post.author?.username === props.session?.user.name && props.handleDelete &&
-                    <DropdownMenu className='absolute right-0 mr-2' options={postOptions} id={props.post.id}>
+                    <DropdownMenu 
+                        className='absolute right-0 mr-2' 
+                        options={postOptions} 
+                        id={props.post.id}
+                    >
                         <AiOutlineMore className="text-gray-500 cursor-pointer"/>
                     </DropdownMenu>
                 }
             </div>
             <div className='card-body'>  
                 <Video src={props.post.url} />
-                <Link href={`/post/${props.post.id}`}>
-                    <div className="my-2 mx-2 lg:mx-6 cursor-pointer">
-                        <h1 className='text-white font-semibold text-lg'>{props.post.title}</h1>
-                        <div className='flex flex-row justify-between text-sm py-2'>
-                            <div className="flex flex-row space-x-2 text-white items-center">
-                                <AiOutlineLike className="text-btnBlue h-4 w-4"/>
-                                <p>{likes}</p>
-                            </div>
-                            <div className="flex flex-row space-x-4 text-white items-center">
-                                <div className="flex flex-row space-x-2 text-white items-center">
-                                    <p>{props.post.viewsCount || 0}</p>
-                                    <p>Views</p>
-                                </div>
-                                <div className="flex flex-row space-x-2 text-white items-center">
-                                    <p>{commentCount || 0}</p>
-                                    <p>Comments</p>
-                                </div>
-                                <div className="flex flex-row space-x-2 text-white items-center">
-                                    <p>{props.post.sharesCount || 0}</p>
-                                    <p>Shares</p>
-                                </div>
-                            </div>
+                { props.disablePostClick ? 
+                    (
+                        <div>
+                            {postBody}
                         </div>
-                    </div>
-                </Link>
+                    ) : (
+                        <Link href={`/post/${props.post.id}`}>
+                            {postBody}
+                        </Link>
+                    )
+
+                }
                 <div className="card-footer p-4">
                     <div className="flex flex-row justify-between lg:justify-evenly text-white text-sm">
                         {props.session ? 
@@ -271,26 +306,62 @@ const Card = (props: Props) => {
             </div>
             {props.disableComment && props.session &&
                 <>
-                <br />
-                    <CommentInput id={props.post.id} username={props.session?.user.name} setParentComment={setParentComment} />
-                </>}
-            {props.post.comment && 
-                <Comment comment={props.post.comment.content} date={props.post.comment.createdAt} username={props.post.comment.author?.username} image={props.post.comment.author?.profileImage || props.post.comment.author?.user?.image} className="max-w-xs sm:max-w-md md:max-w-lg lg:max-w-md" />
+                    <br />
+                    <CommentInput 
+                        id={props.post.id} 
+                        username={props.session?.user.name} 
+                        setParentComment={setParentComment} 
+                    />
+                </>
             }
-            <Modal isOpen={isOpen} setIsOpen={setIsOpen} title='Comments'>
+            {props.post.comment && 
+                <Comment 
+                    comment={props.post.comment.content} 
+                    date={props.post.comment.createdAt} 
+                    username={props.post.comment.author?.username} 
+                    image={props.post.comment.author?.profileImage || props.post.comment.author?.user?.image} 
+                    className="max-w-xs sm:max-w-md md:max-w-lg lg:max-w-md" 
+                />
+            }
+            <Modal 
+                isOpen={isOpen} 
+                setIsOpen={setIsOpen} 
+                title='Comments'
+            >
                 {props.session &&
-                    <CommentInput id={props.post.id} username={props.session?.user.name} setParentComment={setParentComment} />
+                    <CommentInput 
+                        id={props.post.id} 
+                        username={props.session?.user.name} 
+                        setParentComment={setParentComment} 
+                    />
                 }
                 <div className='overflow-y-auto mt-4 max-h-96'>
                     {comments && comments.map((comment, key) => {
                         return(
                         <div key={key} className=''>
-                            <Comment comment={comment.content} date={comment.createdAt} username={comment.author.username} image={comment.author.profileImage || comment.author.user.image} />
+                            <Comment 
+                                comment={comment.content} 
+                                date={comment.createdAt} 
+                                username={comment.author.username} 
+                                image={comment.author.profileImage || comment.author.user.image} 
+                            />
                             <hr className='border border-solid border-bgBlue-200 my-1'/>
                         </div>)
                     })}
                 </div>
             </Modal>
+            {props.handleDelete && 
+                <ConfirmModal
+                    isOpen={confirmDelete} 
+                    setIsOpen={setConfirmDelete} 
+                    onClick={() => {
+                        props.handleDelete(props.post.id)
+                        setConfirmDelete(false)
+                    }}
+                >
+                    Are you sure you want to delete this clip?
+                </ConfirmModal>
+            }
         </div>
     )
 }

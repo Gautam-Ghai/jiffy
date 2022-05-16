@@ -1,5 +1,18 @@
 import { prisma } from "../../../lib/prisma";
 
+export const getUserId = async(username: string) => {
+  const result = await prisma.userProfile.findUnique({
+      where: {
+        username: username,
+      },
+      select: {
+        id: true
+      }
+  })
+
+  return result
+}
+
 export const getUserProfile = async(username: string) => {
     const result = await prisma.userProfile.findUnique({
         where: {

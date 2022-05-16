@@ -29,12 +29,24 @@ const SinglePost = (props: Props) => {
       <Layout>
           {props.post ?
             <div className='mb-6'>
-                <Card post={props.post} session={props.session} disableComment setParentComments={setComments} parentComments={comments}/>
+                <Card 
+                    post={props.post} 
+                    session={props.session} 
+                    disableComment 
+                    disablePostClick 
+                    setParentComments={setComments} 
+                    parentComments={comments}
+                />
                 <div className='mx-4'>
                 {comments && comments.map((comment, key) => {
                     return(
                         <div key={key} className=''>
-                            <Comment comment={comment.content} date={comment.createdAt} username={comment.author?.username} profileImage={comment.author?.profileImage || comment.author?.user?.image} />
+                            <Comment 
+                                comment={comment.content} 
+                                date={comment.createdAt} 
+                                username={comment.author?.username} 
+                                profileImage={comment.author?.profileImage || comment.author?.user?.image} 
+                            />
                             <hr className='border border-solid border-bgBlue-200 my-1'/>
                         </div>
                     )

@@ -21,14 +21,14 @@ export default function Dropdown(props: Props) {
   return (
     <Listbox value={props.selected} onChange={props.setSelected}>
       {({ open }) => (
-        <div className='flex flex-row space-x-2 mt-2'>
+        <div className='flex flex-row space-x-2 my-2 w-96'>
           <Listbox.Label className="pt-2 block text-sm font-medium text-gray-500">Game</Listbox.Label>
-          <div className="relative">
-            <Listbox.Button className="relative w-full border-none rounded-md shadow-sm px-3 py-2 text-left cursor-pointer  sm:text-sm bg-bgBlue-200">
+          <div className="relative w-full">
+            <Listbox.Button className="relative w-full border-gray-500 border border-solid rounded-md shadow-sm px-3 py-2 text-left cursor-pointer  sm:text-sm bg-bgBlue-200">
               <span className="flex items-center">
                 <img src={props.selected.logoImage} alt="" className="flex-shrink-0 h-6 w-6 rounded-full" />
                 <span className="ml-3 block truncate text-gray-500">{props.selected.name}</span>
-                <span className='ml-4 text-gray-500 h-4'>
+                <span className='absolute right-4 text-gray-500 h-4'>
                   {open ? <AiOutlineUp /> : <AiOutlineDown />}
                 </span>
               </span>
