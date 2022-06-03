@@ -33,32 +33,44 @@ const Game = (props: Props) => {
         }
     }
   return (
-    <Layout>
-        <div className='container max-w-1200'>
+    <Layout showNavbarMenu>
+        <div className=''>
             <div className='relative'>
                 <Image src={props.game.coverImage} width={1980} height={1080} /> 
-                <div className='absolute top-3/4 md:top-2/3 left-4 sm:left-10 w-32 sm:w-auto'>
-                    <Image src={props.game.profileImage} width={216} height={384} />
-                </div>
             </div>
-            <div className='ml-40 sm:ml-72 mt-4 text-white'>
-                    <h1 className='text-3xl sm:text-5xl'>{props.game.name}</h1>
-                    <h2 className='text-base sm:text-xl pt-2'><span className="text-gray-500">Genre: </span>{props.game.genre.replace(/_/g, ' ')}</h2>
-                    <h2 className='text-base sm:text-xl'><span className="text-gray-500">Date released: </span>{props.game.releaseDate}</h2>
-                    <h2 className='text-base sm:text-xl'><span className="text-gray-500">Total Posts: </span>{props.game?._count?.posts}</h2>
-            </div>
-            <div className='mb-10 sm:mb-40 md:mb-16 lg:mb-10' />
-            {posts ? 
-                <div className="flex flex-col justify-left items-center">
-                    {posts.map((data, key) => {
-                        return ( 
-                        <Card post={data} key={key} session={props.session} handleDelete={handleDelete} />
-                        )
-                    })}
+            <div className='flex flex-col md:flex-row sm:space-x-4 lg:space-x-8 sm:ml-4'>
+                <div className='md:-mt-40 mt-10 bg-cardBlue-100 rounded-md p-8 w-full md:w-96 text-white h-auto md:h-96 z-50'>
+                
+                    <div className='flex items-center flex-wrap'>
+                        <div className="h-20 w-20 pl-2 pt-2 border-2 border-borderBlue rounded-full z-10 bg-bgBlue-200 mr-4">
+                            <Image 
+                                src={`${props.game?.logoImage ? props.game.logoImage : "/assets/game.png"}`} 
+                                height="60" 
+                                width="60" 
+                                className="rounded-full" 
+                                alt="game" 
+                            />
+                        </div>
+                        <h1 className='text-5xl'>{props.game.name}</h1>
+                    </div>
+                    
+                    
+                    <h2 className='text-base md:text-xl pt-2'><span className="text-gray-500">Genre: </span>{props.game.genre.replace(/_/g, ' ')}</h2>
+                    <h2 className='text-base md:text-xl'><span className="text-gray-500">Date released: </span>{props.game.releaseDate}</h2>
+                    <h2 className='text-base md:text-xl'><span className="text-gray-500">Total Posts: </span>{props.game?._count?.posts}</h2>
                 </div>
-            : 
-                <h1 className='text-3xl sm:text-5xl'>No games yet!!!</h1>
-            }
+                    {posts ? 
+                        <div className="flex flex-col justify-left items-center">
+                            {posts.map((data, key) => {
+                                return ( 
+                                <Card post={data} key={key} session={props.session} handleDelete={handleDelete} />
+                                )
+                            })}
+                        </div>
+                    : 
+                        <h1 className='text-3xl sm:text-5xl'>No games yet!!!</h1>
+                    }
+            </div>
         </div>
     </Layout>
   )

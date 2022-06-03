@@ -33,7 +33,7 @@ const User = (props: Props) => {
                 {props.posts.length > 0 ?
                   <Main posts={props.posts} session={props.session} games={props.games} />
                   :
-                  props.session.user.name === username ? (
+                  props.session && props.session.user.name === username ? (
                     <div className='flex flex-col items-center justify-center'>
                       <h1 className='text-center text-white font-semibold text-xl my-4'>No clips to show yet...</h1>
                       <Button onClick={() => router.push("/upload")}>Add a New Clip</Button>

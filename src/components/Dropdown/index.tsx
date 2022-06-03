@@ -1,6 +1,6 @@
 import { Fragment, useState } from 'react'
 import { Listbox, Transition } from '@headlessui/react' 
-import { AiOutlineDown, AiOutlineUp } from "react-icons/ai"
+import { AiOutlineDown, AiOutlineUp, AiOutlineClose } from "react-icons/ai"
 
 interface Props {
   data: {
@@ -17,6 +17,10 @@ function classNames(...classes) {
 }
 
 export default function Dropdown(props: Props) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const filteredOptions = searchTerm
+    ? props.data.filter((item) => item.name.toLowerCase().includes(searchTerm))
+    : props.data;
 
   return (
     <Listbox value={props.selected} onChange={props.setSelected}>
@@ -42,31 +46,50 @@ export default function Dropdown(props: Props) {
               leaveTo="opacity-0"
             >
               <Listbox.Options className="absolute z-10 mt-1 w-full bg-bgBlue-200 shadow-lg max-h-56 rounded-md py-1 text-base overflow-auto sm:text-sm">
-                {props.data.map((data) => (
-                  <Listbox.Option
-                    key={data.id}
-                    className={({ active }) =>
-                      classNames(
-                        active ? 'text-white bg-blue-600' : 'text-gray-500',
-                        'cursor-pointer select-none relative py-2 pl-3 pr-9'
-                      )
-                    }
-                    value={data}
-                  >
-                    {({ selected, active }) => (
-                      <>
-                        <div className="flex items-center">
-                          <img src={data.logoImage} alt="" className="flex-shrink-0 h-6 w-6 rounded-full" />
-                          <span
-                            className={classNames(selected ? 'font-semibold' : 'font-normal', 'ml-3 block truncate')}
-                          >
-                            {data.name}
-                          </span>
-                        </div>
-                      </>
-                    )}
-                  </Listbox.Option>
-                ))}
+                <div className="relative">
+                  <div className="sticky top-0 z-20  px-1">
+                    <div className="mt-1 block items-center">
+                      <input
+                        type="text"
+                        name="search"
+                        id="search"
+                        placeholder='search'
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full mb-2 border-gray-500 border border-solid bg-bgBlue-200 px-3 py-2 rounded-lg caret-gray-500 text-gray-500 placeholder-gray-500 focus:text-white"
+                      />
+                      <div className="absolute inset-y-0 right-0 flex py-1.5 pr-1.5 ">
+                        {searchTerm && <AiOutlineClose className='cursor-pointer text-white h-6 w-6' onClick={() => setSearchTerm('')}/>}
+                      </div>
+                    </div>
+                  </div>
+
+                  {filteredOptions.map((data) => (
+                    <Listbox.Option
+                      key={data.id}
+                      className={({ active }) =>
+                        classNames(
+                          active ? 'text-white bg-blue-600' : 'text-gray-500',
+                          'cursor-pointer select-none relative py-2 pl-3 pr-9'
+                        )
+                      }
+                      value={data}
+                    >
+                      {({ selected, active }) => (
+                        <>
+                          <div className="flex items-center">
+                            <img src={data.logoImage} alt="" className="flex-shrink-0 h-6 w-6 rounded-full" />
+                            <span
+                              className={classNames(selected ? 'font-semibold' : 'font-normal', 'ml-3 block truncate')}
+                            >
+                              {data.name}
+                            </span>
+                          </div>
+                        </>
+                      )}
+                    </Listbox.Option>
+                  ))}
+                </div>
               </Listbox.Options>
             </Transition>
           </div>

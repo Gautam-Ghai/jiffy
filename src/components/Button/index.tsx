@@ -5,7 +5,6 @@ interface Props {
     children: JSX.Element | string;
     className?: any,
     onClick?: () => void
-    type?: string
 }
 
 export default function Button(props: Props) {

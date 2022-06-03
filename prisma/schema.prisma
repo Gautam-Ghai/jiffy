@@ -26,13 +26,16 @@ model UserProfile {
   user              User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId            Int
   username          String @unique
+  lowercaseUsername String @unique
   createdAt         DateTime @default(now())
+  isAdmin           Boolean @default(false)
   profileImage      String?
   profileImageId    String?
   bannerImage       String?
   bannerImageId     String?
   website           String?
   description       String?
+  socialMedia       SocialMedia? @relation("userSocials")
   posts             Post[] @relation("Author")
   likedPosts        Post[] @relation("UserLikedPost")
   savedPosts        Post[] @relation("UserSavedPost")
@@ -40,7 +43,22 @@ model UserProfile {
   likedComments     Comment[] @relation("UserLikesComment")
   followers         Follows[] @relation("follower")
   following         Follows[] @relation("following")
-  gameFollows       Game[] @relation("userFollowGame")
+  gameFollows       Game[] @relation("UserFollowGame")
+  gamesRequested    GameRquests[] @relation("UserRequestedGame")
+  gamesAdded        Game[] @relation("UserAddGame")
+  notifications     Notification[] @relation("UserRecievedNotification")
+}
+
+model SocialMedia {
+  id              Int @default(autoincrement()) @id
+  userId          Int
+  user            UserProfile @relation("userSocials", fields: [userId], references: [id], onDelete: Cascade)
+  discord         String?
+  twitch          String?
+  twitter         String?
+  facebook        String?
+  instagram       String?
+  tiktok          String?
 }
 
 model Follows {
@@ -56,12 +74,24 @@ model Game {
   id                Int @default(autoincrement()) @id
   name              String @unique
   releaseDate       String?
+  website           String?
   genre             Genre @default(Action)
   logoImage         String?
-  profileImage      String?
   coverImage        String?
   posts             Post[] @relation("LinkedGame")
-  userFollows       UserProfile[] @relation("userFollowGame")
+  userFollows       UserProfile[] @relation("UserFollowGame")
+  isApproved        Boolean @default(false)
+  addedById         Int?
+  addedBy           UserProfile? @relation("UserAddGame",fields: [addedById], references: [id])
+  request           GameRquests?  @relation("GameRelatedToRequest")
+}
+
+model GameRquests {
+  id                Int @default(autoincrement()) @id
+  gameId            Int
+  game              Game @relation("GameRelatedToRequest",fields: [gameId], references: [id], onDelete: Cascade)
+  creatorId         Int
+  creator           UserProfile @relation("UserRequestedGame", fields: [creatorId], references: [id], onDelete: Cascade)
 }
 
 enum Genre {
@@ -96,6 +126,7 @@ model Post {
   likedBy           UserProfile[] @relation("UserLikedPost", references: [id])
   savedBy           UserProfile[] @relation("UserSavedPost", references: [id])
   comments          Comment[] @relation("PostHasComment")
+  views             Int @default(0)
 }
 
 model Comment {
@@ -111,6 +142,24 @@ model Comment {
   // parentComment     Comment? @relation("CommentParentsComment", fields: [parentCommentId], references: [id])
   // parentCommentId   Int?
   // childComments     Comment[] @relation("CommentParentsComment")
+}
+
+model Notification {
+  id                Int @default(autoincrement()) @id
+  createdAt         DateTime @default(now())
+  type              NotificationType
+  isRead            Boolean @default(false)
+  recipientId       Int
+  recipient         UserProfile @relation("UserRecievedNotification", fields: [recipientId], references: [id], onDelete: Cascade)
+}
+
+enum NotificationType {
+  like
+  comment
+  gameRequestCreated
+  gameRequestApproved
+  gameRequestDeclined
+  follow
 }
 
 model Account {

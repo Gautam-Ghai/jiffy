@@ -1,8 +1,8 @@
 import { Fragment, ReactElement, useEffect, useRef, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 
-import Button from "../Button"
-import ClipLoader from 'react-spinners/ClipLoader'
+import Lottie from 'react-lottie';
+import * as loadingData from '@/utils/loading.json'
 
 
 interface Props {
@@ -20,6 +20,15 @@ export default function Loader(props: Props) {
     else setIsOpen(false)
 
   }, [props.active])
+
+  const options ={
+    loop: true,
+    autoplay: true, 
+    animationData: loadingData,
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice'
+    }
+  }
 
   return (
     <Transition.Root show={isOpen} as={Fragment}>
@@ -52,7 +61,10 @@ export default function Loader(props: Props) {
           >
             <div className="inline-block text-center overflow-hidden transform transition-all align-middle w-full h-auto">
                 <div>
-                    {props.spinner ? props.spinner : <ClipLoader color='#13192a' size={50}/>}
+                  <Lottie options={options}
+                      height={400}
+                      width={400}
+                    />
                     <p className='text-white text-xl'>{props.text}</p>
                 </div>
             </div>

@@ -19,10 +19,15 @@ import { Game } from '@/utils/types/game'
 //Queries
 import { getGames } from '@/queries/Game';
 import { getSpecificPost } from '@/queries/Post';
+import { Post } from '@/utils/types/post';
+import Alert from '@/components/Alert/Index';
 
 interface Props {
     session: Session,
-    games: Game[]
+    games: Game[],
+    post: Post,
+    isAllowedtoEdit: true,
+    isEditing: boolean
 } 
 
 const Upload = (props : Props) => {
@@ -54,6 +59,17 @@ const Upload = (props : Props) => {
         }));
         }
     });
+
+    useEffect(() => {
+      if(props.isAllowedtoEdit){
+        if(props.post){
+          setTitle(props.post.title || '')
+          setDescription(props.post.description || '')
+          setSelected(props.post.game || props.games[0])
+          setFiles([props.post.url])
+        }
+      }
+    }, [])
 
     useEffect(() => () => {
       // Make sure to revoke the data uris to avoid memory leaks
@@ -108,44 +124,95 @@ const Upload = (props : Props) => {
       })
     }
 
+    const handleUpdate = () => {
+      if(title.length === 0) return (
+        setError("title can't be empty")
+      );
+
+      const data = new FormData()
+      data.append('title', title);
+      if(description.length != 0) data.append('description', description);
+      data.append('game', selected.name)
+      const requestOptions = {
+        method: 'PUT',
+        body: data
+      };
+      setLoading(true)
+
+      fetch(`/api/post/${props.post.id}`, requestOptions)
+      .then(res => {
+        router.push('/').finally(() => 
+        setLoading(false))
+      })
+      .catch(err => {
+        setLoading(false)
+        console.log(err)
+        setError(err)
+      })
+
+    }
+
     const handleCancel = () => {
       setFiles([]);
       setTitle('');
+      setDescription('');
       setError('');
+      setSelected(props.games[0])
+
+      {props.isEditing && router.push('/upload')}
     }
 
     return (
         <Layout>
           {props.session ?
+            props.isEditing && !props.isAllowedtoEdit ?
+              <div className='bg-cardBlue-100 rounded-md w-full p-4 sm:p-8 mx-4'>
+                <h1 className='text-white text-5xl font-bold font text-center mt-10'>You're not allowed to edit this post</h1>
+              </div>
+              :
             <div className='bg-cardBlue-100 rounded-md w-full p-4 sm:p-8 mx-4'>
               <div className="w-full flex flex-col justify-center items-center min-h-full">
-                <input type='text' className="my-2 border-gray-500 border border-solid bg-bgBlue-200 w-96 px-3 py-2 rounded-lg caret-gray-500 text-gray-500 placeholder-gray-500" placeholder="Title" onChange={(e) => handleTitle(e)} value={title}/>
-                <TextareaAutosize maxLength={1000} maxRows={15} minRows={3} className="my-2 bg-bgBlue-200 w-96 px-3 py-2 border-gray-500 border border-solid rounded-lg caret-gray-500 text-gray-500 placeholder-gray-500" placeholder="Description" onChange={(e) => handleDescription(e)} value={description}/>
+
+                <input type='text' className="my-2 border-gray-500 border border-solid bg-bgBlue-200 w-full md:w-10/12 px-3 py-2 rounded-lg caret-gray-500 text-gray-500 placeholder-gray-500 focus:text-white" placeholder="Title" onChange={(e) => handleTitle(e)} value={title} maxLength={120}/>
+
+                <TextareaAutosize maxLength={1000} maxRows={15} minRows={5} className="my-2 bg-bgBlue-200 w-full md:w-10/12 px-3 py-2 border-gray-500 border border-solid rounded-lg caret-gray-500 text-gray-500 placeholder-gray-500 focus:text-white" placeholder="Description" onChange={(e) => handleDescription(e)} value={description}/>
+                
                 <Dropdown data={props.games} selected={selected} setSelected={setSelected} />
-                {files.length !=0 ? files.map((file, key) => (
-                  <div key={key} className="relative">
-                    <div className="card mt-2">
-                      <Video src={`${file.preview}`} />
+                
+                { props.isEditing ?
+                  <Video src={files[0]} />
+                  :
+                  files.length !=0 ? files.map((file, key) => (
+                    <div key={key} className="relative">
+                      <div className="card mt-2">
+                        <Video src={`${file.preview}`} />
+                      </div>
+                      <FaTrashAlt onClick={() => setFiles([])} className='text-red-600 h-8 w-auto absolute top-4 right-4 hover:transform hover:rotate-12 cursor-pointer'>
+                        Delete
+                      </FaTrashAlt>
                     </div>
-                    <FaTrashAlt onClick={() => setFiles([])} className='text-red-600 h-8 w-auto absolute top-4 right-4 hover:transform hover:rotate-12 cursor-pointer'>
-                      Delete
-                    </FaTrashAlt>
-                  </div>
-                )) : (
-                  <div {...getRootProps({ className: 'dropzone' })} className="card w-full md:w-10/12 text-gray-500 border rounded-lg border-gray-500 border-dashed py-48 text-center mt-2 cursor-pointer">
-                      <input {...getInputProps()} />
-                      <p>Drag 'n' drop some files here, or click to select files</p>
-                  </div>
-                )
+                  )) : (
+                    <div {...getRootProps({ className: 'dropzone' })} className="card w-full md:w-10/12 text-gray-500 border rounded-lg border-gray-500 border-dashed py-48 text-center mt-2 cursor-pointer">
+                        <input {...getInputProps()} />
+                        <p>Drag 'n' drop some files here, or click to select files</p>
+                    </div>
+                  )
                 }
                 <p className='text-gray-500'>{duration !=0 && `Duration: ${duration} sec`}</p>
                 {error.length !=0 &&
                   <p className="text-center mt-2 text-red-600">{error}</p>
                 }
                 <div className="flex flex-row space-x-2 mt-4">
-                  <Button onClick={handleSubmit}>
-                    Submit
-                  </Button>
+                  {props.isEditing ?
+                    props.isAllowedtoEdit && 
+                      <Button onClick={handleUpdate}>
+                        Update
+                      </Button>
+                  :
+                    <Button onClick={handleSubmit}>
+                      Submit
+                    </Button>
+                  }
                   <Button variant onClick={handleCancel}>
                     Cancel
                   </Button>
@@ -153,36 +220,56 @@ const Upload = (props : Props) => {
               </div>
             </div>
           :
-          <div>
-
-          </div>
+            <div className='bg-cardBlue-100 rounded-md w-full p-4 sm:p-8 mx-4'>
+              <h1 className='text-white text-5xl font-bold font text-center mt-10'>You're not logged in</h1>
+            </div>
           }
           
           <Loader
             active={loading}
-            text='uploading...'
-          />
+            text={`${props.isEditing ? 'updating...' : 'uploading...'}`}
+          /> 
+          <Alert alertText={error} />
         </Layout>
     )
 }
 
 export const getServerSideProps = async ({ req, query }) => {
     const { edit } = query;
+    let postID = null;
+    let isEditing = false
 
-    const postID = parseInt(edit);
+    if(typeof edit == "string" && edit.length > 0)  {
+      isEditing = true
+      postID = parseInt(edit);
+    }
 
     try{
       const session = await getSession({ req })
       console.log("session in upload", session)
 
-      // var post = await getSpecificPost(postID)
+      let post = null;
+      let isAllowedtoEdit = false;
+
+      if(postID) {
+        post = await getSpecificPost(postID)
+        post = JSON.parse(JSON.stringify(post))
+      }
+
+      if(post){
+        if(post.author.username === session?.user?.name) isAllowedtoEdit = true
+      }
+
       var games = await getGames();
   
 
       return {
         props: {
           session,
-          games
+          games,
+          post,
+          isEditing,
+          isAllowedtoEdit
         }
       }
     } catch(err){

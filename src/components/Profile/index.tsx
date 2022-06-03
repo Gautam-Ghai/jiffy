@@ -15,14 +15,14 @@ interface Props {
 
 const Profile = (props: Props) => {
     return (
-        <div className={`bg-cardBlue-100 text-white rounded-md drop-shadow-lg h-auto pb-6 w-full md:w-96`}>
+        <div className={`bg-cardBlue-100 text-white rounded-md drop-shadow-lg h-fit pb-6 w-full md:w-96`}>
             <div className="w-full relative">
-                <Image src={`${props.user.bannerImage || "/assets/default_banner_image.png"}`} alt='banner' height={'126'} width={'380'} className="rounded-t-md" layout='responsive'/> 
-                <div className={`absolute left-4 top-3/4 rounded-full border-4 border-solid border-borderBlue bg-btnBlue h-20 w-20`}>
+                <Image src={`${props.user.bannerImage || "/assets/default_banner_image.png"}`} alt='banner' height={'144'} width={'384'} className="rounded-t-md" layout='responsive' objectFit='cover'/> 
+                <div className={`absolute left-4 -bottom-16 rounded-full border-4 border-solid border-borderBlue bg-btnBlue h-20 w-20`}>
                     <Image src={`${props.user.profileImage || props.user.user.image || "/assets/user.png"}`} alt="user" height="80" width="80" className='rounded-full'/>
                 </div>
             </div>
-            <div className="ml-28 pb-2">
+            <div className="ml-28 py-2">
                 <Link href={`/user/${props.user.username}`}>
                     <h1 className="font-bold text-xl cursor-pointer ">{props.user.username}</h1>
                 </Link>
@@ -33,17 +33,17 @@ const Profile = (props: Props) => {
                     </div>
                 }
             </div>
-            <div className="bg-bgBlue-200 flex flex-row justify-evenly h-16 pt-2.5 my-4 mt-6">
+            <div className="bg-cardBlue-200 flex flex-row justify-evenly h-16 pt-2.5 my-4 mt-6">
                 <div className="flex flex-col items-center">
                     <p>{props.user._count?.posts ? props.user._count.posts : 0}</p>
                     <p className='text-xs text-gray-500'>Clips</p>
                 </div>
                 <div className="flex flex-col items-center">
-                    <p>3.4k</p>
+                    <p>{props.user._count?.followers ? props.user._count.followers : 0}</p>
                     <p className='text-xs text-gray-500'>Followers</p>
                 </div>
                 <div className="flex flex-col items-center">
-                    <p>54</p>
+                    <p>{props.user._count?.following ? props.user._count.following : 0}</p>
                     <p className='text-xs text-gray-500'>Following</p>
                 </div>
             </div>

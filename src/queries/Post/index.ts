@@ -40,7 +40,8 @@ export const getAllPosts = async() => {
         },
         orderBy: {
           createdAt: 'desc'
-        }
+        },
+        take: 10
     });
 
     return result;
@@ -83,7 +84,8 @@ export const getSpecificPost = async(postId: number) => {
             _count: {
                 select:{
                     likedBy: true,
-                    comments: true
+                    comments: true,
+                    savedBy: true
                 }
             }
         },
@@ -131,13 +133,15 @@ export const getAllPostsFromUser = async(username: string) => {
             _count: {
               select:{
                 likedBy: true,
-                comments: true
+                comments: true,
+                savedBy: true
               }
             }
           },
           orderBy: {
             createdAt: 'desc'
-          }
+          },
+          take: 10
         },
       },
       where:{
@@ -161,6 +165,7 @@ export const getLikedPostsFromUser = async(username: string) => {
           url: true,
           publicId: true,
           gameId: true,
+          views: true,
           authorId: true,
           author: {
             select: {
@@ -193,13 +198,15 @@ export const getLikedPostsFromUser = async(username: string) => {
           _count: {
             select:{
               likedBy: true,
-              comments: true
+              comments: true,
+              savedBy: true
             }
           },
         },
         orderBy:{
           createdAt: 'desc'
-        }
+        },
+        take: 10
       }
     },
     where:{
@@ -223,6 +230,7 @@ export const getSavedPostsFromUser = async(username: string) => {
           url: true,
           publicId: true,
           gameId: true,
+          views: true,
           authorId: true,
           author: {
             select: {
@@ -255,13 +263,15 @@ export const getSavedPostsFromUser = async(username: string) => {
           _count: {
             select:{
               likedBy: true,
-              comments: true
+              comments: true,
+              savedBy: true
             }
           },
         },
         orderBy:{
           createdAt: 'desc'
-        }
+        },
+        take: 10
       }
     },
     where:{
@@ -271,3 +281,29 @@ export const getSavedPostsFromUser = async(username: string) => {
 
   return result;
 }
+
+export const getPostsFromFollowing = async() =>{
+  const users = [{
+    username: 'text'
+  },
+  {
+    username: 'text'
+  }
+]
+    
+  const query =  users.map((user) =>{
+    const test = {
+      author:{
+        username: user.username
+      }
+    }
+
+    return test;
+  })
+
+  const result = prisma.post.findMany({
+    where:{
+      OR : query
+    }
+  })
+} 

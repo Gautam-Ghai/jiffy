@@ -23,7 +23,8 @@ export const getAllComments = async(postId: number) => {
         },
         orderBy:{
             createdAt: 'desc'
-        }
+        },
+        take: 10
     })
 
     return result;

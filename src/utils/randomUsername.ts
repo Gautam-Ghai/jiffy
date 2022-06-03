@@ -9,6 +9,8 @@ const randomUsername = async() =>{
         username += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
 
+    username = username.replace(/ /g, '')
+
     const bool = await isUsernameAvailable(username);
 
     if(bool) return username;

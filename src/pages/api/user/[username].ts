@@ -11,7 +11,7 @@ const fileName = uuid()
 const apiRoute = nc<NextApiRequest, NextApiResponse>({
 
     onError: (err, req, res, next) => {
-        console.error(err.stack);
+        console.error('error', err);
         res.status(500).end("Something broke!");
       },
     
@@ -45,27 +45,37 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
 
   const { username } = req.query;
 
-  const user = await getUserId(username);
+  const user = await getUserProfile(username);
 
   let resultImage = null
   let resultWebsite = null
   let resultAbout = null
+  let deleteBanner = null
 
   if(user){
     let file = null
     if(data?.files?.banner){
+      console.log('file',data?.files?.banner)
       file = data?.files?.banner.filepath ;
     }
 
       if(file){
+        console.log('file', file)
+        if(user.bannerImageId && user.bannerImageId.length > 0){
+            deleteBanner = await cloudinary.v2.uploader.destroy(user.bannerImageId,  {type : 'upload', resource_type : 'image'})
+        }
+        
         const response = await cloudinary.v2.uploader.upload(file, {
           resource_type: 'image',
           public_id: `${fileName}`,
           upload_preset: 'whoops-user'
         });
 
+        console.log('response', response)
+
       
         if(response){
+          console.log('file uploaded')
           resultImage = await prisma.userProfile.update({
             data: {
               bannerImage: response.url,

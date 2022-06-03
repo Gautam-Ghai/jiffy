@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import nc from 'next-connect';
 import cloudinary from 'cloudinary';
+import { IncomingForm } from 'formidable';
 
 //Utils
 import { prisma } from "../../../../lib/prisma";
@@ -23,6 +24,43 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
         res.status(405).json({ error: `Method '${req.method}' Not Allowed` });
       },
   
+})
+.put(async(req, res) => {
+  const data = await new Promise((resolve, reject) => {
+    const form = new IncomingForm({maxFileSize: 15728640});
+
+    form.parse(req, (err, fields, files) => {
+      if (err) return reject(err);
+      resolve({ fields, files });
+    });
+  });
+
+  const { postId } = req.query;
+  const id = parseInt(postId);
+
+  const game = {
+    connect: {
+      name: data?.fields?.game
+    }
+  }
+
+  if(data?.fields?.title.length === 0){
+    res.status(500).json({ error: `Title can't be empty` });
+  }
+
+  const result = await prisma.post.update({
+    data:{
+      game: game,
+      title: data?.fields?.title,
+      description: data?.fields?.description
+    },
+    where: {
+      id: id
+    }
+  })
+
+  res.send(result)
+
 })
 .delete(async( req, res ) => {
 
@@ -61,5 +99,11 @@ const apiRoute = nc<NextApiRequest, NextApiResponse>({
   }
   else res.status(500).send({Error: "couldn't delete the post"})
 })
+
+export const config = {
+  api: {
+      bodyParser: false,
+  },
+}
 
 export default apiRoute;

@@ -11,8 +11,20 @@ export interface User {
     website?: string,
     description?: string,
     likedPosts? : Post[]
-    _count?: { posts?: number },
+    _count?: { 
+        posts?: number
+        followers?: number
+        following?: number
+    },
     user:{
         image?: string
+    },
+    socialMedia?:{
+        discord?: string,
+        facebook?: string,
+        instagram?: string,
+        tiktok?: string,
+        twitch?: string,
+        twitter?: string
     }
 }

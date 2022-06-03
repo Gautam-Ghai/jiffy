@@ -71,7 +71,8 @@ const getOrCreateUserProfile = async(name: string, id: number) =>{
                                     id: id
                                 }
                             },
-                            username: name
+                            username: name.replace(/ /g, ''),
+                            lowercaseUsername: name.toLowerCase().replace(/ /g, '')
                         }
                     })
                     return userProfile
@@ -84,7 +85,8 @@ const getOrCreateUserProfile = async(name: string, id: number) =>{
                                     id: id
                                 }
                             },
-                            username: username
+                            username: username,
+                            lowercaseUsername: username.toLowerCase()
                         }
                     })
                     return userProfile

@@ -10,9 +10,11 @@ export interface Post {
   publicId?: string
   gameId?: number
   game?: Game,
+  views?: number,
   _count?: {
     likedBy?: number,
-    comments?: number
+    comments?: number,
+    savedBy?: number
   }
   authorId?: number,
   author?: User

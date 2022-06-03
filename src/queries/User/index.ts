@@ -24,9 +24,21 @@ export const getUserProfile = async(username: string) => {
               image: true
             }
           },
+          socialMedia:{
+            select:{
+              discord: true,
+              facebook: true,
+              instagram: true,
+              tiktok: true,
+              twitch: true,
+              twitter: true,
+            }
+          },
           _count: {
             select: {
-              posts: true
+              posts: true,
+              followers: true,
+              following: true,
             }
           }
         }

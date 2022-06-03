@@ -5,7 +5,7 @@ import Lottie from 'react-lottie';
 import * as animationData from '@/utils/404.json'
 
 
-const Custom404 = () => {
+const Custom500 = () => {
 
     const options ={
         loop: true,
@@ -19,7 +19,7 @@ const Custom404 = () => {
     return (
         <Layout>
             <div>
-            <h1 className='text-btnBlue fredoka-font text-5xl text-center mt-10'>404 - Page Not Found</h1>
+            <h1 className='text-btnBlue fredoka-font text-5xl text-center mt-10'>500 - Server Error</h1>
                 <Lottie options={options}
                     height={400}
                     width={400}
@@ -29,4 +29,4 @@ const Custom404 = () => {
     )
 }
 
-export default Custom404;
+export default Custom500;
